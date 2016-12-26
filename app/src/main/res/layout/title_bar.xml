@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#f2b84b"
+                android:id="@+id/relativeLayout_title">
+
+    <!-- 标题栏 (可用到多种activity)-->
+
+    <!-- 导航键 -->
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp">
+        <ImageButton
+            android:id="@+id/btn_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:src="@mipmap/img_menu"
+            android:visibility="gone"/>
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:src="@mipmap/back"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+    <!-- 标题名 -->
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textColor="#fff"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:text="shen"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp">
+        <Button
+            android:id="@+id/btn_title_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textColor="@drawable/btn_text_color_w_b"
+            android:text="确认"
+            android:visibility="gone"/>
+        <Button
+            android:id="@+id/btn_title_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textColor="@drawable/btn_text_color_w_b"
+            android:text="添加"
+            android:visibility="gone"/>
+
+        <!--折线图的设置-->
+        <ImageButton
+            android:id="@+id/btn_title_set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textColor="@drawable/btn_text_color_w_b"
+            android:src="@mipmap/img_menu"
+            android:visibility="gone"/>
+
+        <!--shopping中 图片选择，listview 还是选择宫格(网格)-->
+        <ImageButton
+            android:id="@+id/btn_lv_gv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textColor="@drawable/btn_text_color_w_b"
+            android:src="@mipmap/icon_pic_list_type"
+            android:visibility="gone"/>
+
+
+        <!--分享-->
+        <ImageButton
+            android:id="@+id/btn_shared"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textColor="@drawable/btn_text_color_w_b"
+            android:src="@drawable/title_shared"
+            android:visibility="gone"/>
+
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>
