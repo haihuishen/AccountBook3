@@ -30,7 +30,7 @@
                 android:text="更换头像："
                 android:textColor="@color/black"/>
 
-            <com.shen.accountbook2.ui.view.CircleImageView
+            <com.shen.accountbook3.ui.view.CircleImageView
                 android:id="@+id/Circle_Image_head"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"

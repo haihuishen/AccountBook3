@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">电子账本2</string>
+    <string name="app_name">电子账本3</string>
 
     <string name="the_indentation">\u3000\u3000</string>  <!--缩进-->
 </resources>

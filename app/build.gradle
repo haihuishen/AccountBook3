@@ -19,7 +19,7 @@ android {
 //    versionName是给用户看的，可以写1.1 , 1.2等等版本
 
     defaultConfig {
-        applicationId "com.shen.accountbook2"
+        applicationId "com.shen.accountbook3"
         minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
@@ -68,7 +68,7 @@ android {
     // 编译后的apk名字!
     android.applicationVariants.all {
         variant -> variant.outputs.each {
-            output -> output.outputFile = new File(output.outputFile.parent, "AccountBook2_" + defaultConfig.versionCode +  "_v" + defaultConfig.versionName +"_"+buildType.name+ ".apk");
+            output -> output.outputFile = new File(output.outputFile.parent, "AccountBook3_" + defaultConfig.versionCode +  "_v" + defaultConfig.versionName +"_"+buildType.name+ ".apk");
         }
     }
 
@@ -86,19 +86,19 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.0.0'
     compile project(path: ':PhotoView')
     compile 'com.android.support:support-v4:23.4.0'
-    compile files('F:/AndroidStudioProjects/AccountBook2/libraries/library-2.4.0.jar')
+    compile files('F:/AndroidStudioProjects/AccountBook3/libraries/library-2.4.0.jar')
     compile project(path: ':HelloCharts')
     compile project(path: ':pickerview')
     compile project(path: ':CompactCalendarView')
     compile 'com.jiechic.library:xUtils:2.6.14'
-    compile files('F:/AndroidStudioProjects/AccountBook2/libraries/gson-2.2.4.jar')
-    compile files('F:/AndroidStudioProjects/AccountBook2/libraries/sharedsdk/MobCommons-2016.1107.1809.jar')
-    compile files('F:/AndroidStudioProjects/AccountBook2/libraries/sharedsdk/MobTools-2016.1107.1809.jar')
-    compile files('F:/AndroidStudioProjects/AccountBook2/libraries/sharedsdk/ShareSDK-Core-2.7.10.jar')
-    compile files('F:/AndroidStudioProjects/AccountBook2/libraries/sharedsdk/ShareSDK-QZone-2.7.10.jar')
-    compile files('F:/AndroidStudioProjects/AccountBook2/libraries/sharedsdk/ShareSDK-SinaWeibo-2.7.10.jar')
-    compile files('F:/AndroidStudioProjects/AccountBook2/libraries/sharedsdk/ShareSDK-Wechat-2.7.10.jar')
-    compile files('F:/AndroidStudioProjects/AccountBook2/libraries/sharedsdk/ShareSDK-Wechat-Core-2.7.10.jar')
-    compile files('F:/AndroidStudioProjects/AccountBook2/libraries/sharedsdk/ShareSDK-Wechat-Moments-2.7.10.jar')
-    compile files('F:/AndroidStudioProjects/AccountBook2/libraries/sharedsdk/ShareSDK-YouDao-2.7.10.jar')
+    compile files('F:/AndroidStudioProjects/AccountBook3/libraries/gson-2.2.4.jar')
+    compile files('F:/AndroidStudioProjects/AccountBook3/libraries/sharedsdk/MobCommons-2016.1107.1809.jar')
+    compile files('F:/AndroidStudioProjects/AccountBook3/libraries/sharedsdk/MobTools-2016.1107.1809.jar')
+    compile files('F:/AndroidStudioProjects/AccountBook3/libraries/sharedsdk/ShareSDK-Core-2.7.10.jar')
+    compile files('F:/AndroidStudioProjects/AccountBook3/libraries/sharedsdk/ShareSDK-QZone-2.7.10.jar')
+    compile files('F:/AndroidStudioProjects/AccountBook3/libraries/sharedsdk/ShareSDK-SinaWeibo-2.7.10.jar')
+    compile files('F:/AndroidStudioProjects/AccountBook3/libraries/sharedsdk/ShareSDK-Wechat-2.7.10.jar')
+    compile files('F:/AndroidStudioProjects/AccountBook3/libraries/sharedsdk/ShareSDK-Wechat-Core-2.7.10.jar')
+    compile files('F:/AndroidStudioProjects/AccountBook3/libraries/sharedsdk/ShareSDK-Wechat-Moments-2.7.10.jar')
+    compile files('F:/AndroidStudioProjects/AccountBook3/libraries/sharedsdk/ShareSDK-YouDao-2.7.10.jar')
 }

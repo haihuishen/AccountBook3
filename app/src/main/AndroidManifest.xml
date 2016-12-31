@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.shen.accountbook2">
+          package="com.shen.accountbook3">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -29,14 +29,14 @@
 
 
     <application
-        android:name=".global.AccountBookApplication"
+        android:name="com.shen.accountbook3.global.AccountBookApplication"
         android:allowBackup="true"
         android:icon="@mipmap/icon_app"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".ui.SplashActivity" android:screenOrientation="portrait">
+        <activity android:name="com.shen.accountbook3.ui.SplashActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -44,36 +44,36 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.MainActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.AddActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.LoginActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.RegisterActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.AddAssetActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.ChangePasswordActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.AssetManagerActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.ChangeAssetActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.shen.accountbook3.ui.MainActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.shen.accountbook3.ui.AddActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.shen.accountbook3.ui.LoginActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.shen.accountbook3.ui.RegisterActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.shen.accountbook3.ui.AddAssetActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.shen.accountbook3.ui.ChangePasswordActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.shen.accountbook3.ui.AssetManagerActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.shen.accountbook3.ui.ChangeAssetActivity" android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".ui.fragment.activity.ReportForM_LineChar_Activity"
+        <activity android:name="com.shen.accountbook3.ui.fragment.activity.ReportForM_LineChar_Activity"
                   android:configChanges="orientation|keyboardHidden|screenSize"></activity>
-        <activity android:name=".ui.fragment.activity.ReportForY_LineChar_Activity"
+        <activity android:name="com.shen.accountbook3.ui.fragment.activity.ReportForY_LineChar_Activity"
                   android:configChanges="orientation|keyboardHidden|screenSize"></activity>
-        <activity android:name=".ui.fragment.activity.ReportForType_LineChar_Activity"
+        <activity android:name="com.shen.accountbook3.ui.fragment.activity.ReportForType_LineChar_Activity"
                   android:configChanges="orientation|keyboardHidden|screenSize"></activity>
 
-        <activity android:name=".ui.fragment.activity.ReportForMixture_Activity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.fragment.activity.ReportForD_Activity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.shen.accountbook3.ui.fragment.activity.ReportForMixture_Activity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.shen.accountbook3.ui.fragment.activity.ReportForD_Activity" android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".ui.fragment.activity.MineInfoActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.fragment.activity.ChangeConsumptionInfoActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.shen.accountbook3.ui.fragment.activity.MineInfoActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.shen.accountbook3.ui.fragment.activity.ChangeConsumptionInfoActivity" android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".ui.fragment.activity.ConsumerDetails_Activity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.shen.accountbook3.ui.fragment.activity.ConsumerDetails_Activity" android:screenOrientation="portrait"></activity>
 
         <!-- 不要忘记exported这个属性，如果不加，可能会导致外部程序访问失败，错误信息为权限拒绝 -->
         <!-- authorities这个属性就是我们在ContentProvider中使用的addURI方法时的第一个参数的取值 -->
         <provider
-            android:name=".ui.view.MyMenuRecyclerView.AccounBookProvider"
+            android:name="com.shen.accountbook3.ui.view.MyMenuRecyclerView.AccounBookProvider"
             android:exported="true"
-            android:authorities="com.shen.accountbook2.ui.view.MyMenuRecyclerView.AccounBookProvider" >
+            android:authorities="com.shen.accountbook3.ui.view.MyMenuRecyclerView.AccounBookProvider" >
         </provider>
 
 
@@ -101,7 +101,7 @@
 
         <!--微信分享回调 -->
         <activity
-            android:name="cn.sharesdk.AccountBook2.wxapi.WXEntryActivity"
+            android:name="cn.sharesdk.AccountBook3.wxapi.WXEntryActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"

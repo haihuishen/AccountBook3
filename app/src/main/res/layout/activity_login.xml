@@ -17,7 +17,7 @@
         android:orientation="vertical">
         <!--android:gravity="center"-->
 
-        <com.shen.accountbook2.ui.view.ClearEditText
+        <com.shen.accountbook3.ui.view.ClearEditText
             android:id="@+id/login_et_username"
             android:layout_width="match_parent"
             android:layout_height="40dip"
@@ -30,7 +30,7 @@
             android:drawableRight="@mipmap/delete"
             android:hint="输入用户名"/>
 
-        <com.shen.accountbook2.ui.view.ClearEditText
+        <com.shen.accountbook3.ui.view.ClearEditText
             android:id="@+id/login_et_password"
             android:layout_width="match_parent"
             android:layout_height="40dip"

@@ -27,7 +27,7 @@
                 android:layout_weight="1"
                 android:gravity="center">
 
-                <com.shen.accountbook2.ui.view.CircleImageView
+                <com.shen.accountbook3.ui.view.CircleImageView
                     android:id="@+id/CircleImage_head"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"

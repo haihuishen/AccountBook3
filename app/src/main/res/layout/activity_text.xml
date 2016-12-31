@@ -5,7 +5,7 @@
                 android:background="#95CAE4">
 
 
-    <com.shen.accountbook2.ui.view.ClearEditText
+    <com.shen.accountbook3.ui.view.ClearEditText
         android:id="@+id/username"
         android:layout_marginTop="60dp"
         android:layout_width="fill_parent"
@@ -18,9 +18,9 @@
         android:hint="输入用户名"
         android:layout_height="wrap_content" >
 
-    </com.shen.accountbook2.ui.view.ClearEditText>
+    </com.shen.accountbook3.ui.view.ClearEditText>
 
-    <com.shen.accountbook2.ui.view.ClearEditText
+    <com.shen.accountbook3.ui.view.ClearEditText
         android:id="@+id/password"
         android:layout_marginLeft="10dip"
         android:layout_marginRight="10dip"
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/username"
         android:background="@drawable/bg_et_login" >
-    </com.shen.accountbook2.ui.view.ClearEditText>
+    </com.shen.accountbook3.ui.view.ClearEditText>
 
     <Button
         android:id="@+id/login"

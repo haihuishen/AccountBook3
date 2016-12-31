@@ -41,7 +41,7 @@
                 android:background="@drawable/bg_pink"
                 android:hint="消费类型"/>
 
-            <com.shen.accountbook2.ui.view.ClearEditText
+            <com.shen.accountbook3.ui.view.ClearEditText
                 android:id="@+id/et_concreteness"
                 android:layout_marginTop="5dp"
                 android:paddingRight="5dp"
@@ -96,7 +96,7 @@
                     android:textSize="22dp"
                     android:text="单价: "/>
 
-                <com.shen.accountbook2.ui.view.ClearEditText
+                <com.shen.accountbook3.ui.view.ClearEditText
                     android:id="@+id/et_unitPrice"
                     android:paddingRight="5dp"
                     android:paddingLeft="5dp"
@@ -124,7 +124,7 @@
                     android:textSize="22dp"
                     android:text="数量: "/>
 
-                <com.shen.accountbook2.ui.view.ClearEditText
+                <com.shen.accountbook3.ui.view.ClearEditText
                     android:id="@+id/et_number"
                     android:paddingRight="5dp"
                     android:paddingLeft="5dp"
