@@ -27,5 +27,11 @@ public class PhotosBean {
         public int id;
         public String listimage;
         public String title;
+
+        @Override
+        public String toString() {
+            return  "id:" + id + "   listimage:" + listimage + "   title:" + title;
+        }
     }
+
 }

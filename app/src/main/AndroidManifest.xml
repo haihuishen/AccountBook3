@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <!--SharedSDK-->
     <uses-permission android:name="android.permission.GET_TASKS" />
@@ -67,6 +68,10 @@
         <activity android:name="com.shen.accountbook3.ui.fragment.activity.ChangeConsumptionInfoActivity" android:screenOrientation="portrait"></activity>
 
         <activity android:name="com.shen.accountbook3.ui.fragment.activity.ConsumerDetails_Activity" android:screenOrientation="portrait"></activity>
+
+
+        <!--服务-->
+        <service android:name="com.shen.accountbook3.service.DownAPKService"></service>
 
         <!-- 不要忘记exported这个属性，如果不加，可能会导致外部程序访问失败，错误信息为权限拒绝 -->
         <!-- authorities这个属性就是我们在ContentProvider中使用的addURI方法时的第一个参数的取值 -->

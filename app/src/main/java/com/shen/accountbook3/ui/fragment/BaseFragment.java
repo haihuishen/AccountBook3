@@ -1,5 +1,6 @@
 package com.shen.accountbook3.ui.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 	 *  BasePager类中public Context mContext; <br>
 	 */
     public Context mContext;
+    public Activity mActivity;
 
     protected boolean isVisible;
 
@@ -40,6 +42,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity().getApplicationContext();
+        mActivity = getActivity();
     }
 
     @Override

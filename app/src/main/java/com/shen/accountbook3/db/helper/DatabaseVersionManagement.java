@@ -23,7 +23,7 @@ public class DatabaseVersionManagement {
 
 			db.execSQL("drop table if exists user");
 
-			db.execSQL("create table if not exists user(id INTEGER PRIMARY KEY AUTOINCREMENT, name varchar(10), remark varchar(50), age varchar(10))");
+			db.execSQL("createFile table if not exists user(id INTEGER PRIMARY KEY AUTOINCREMENT, name varchar(10), remark varchar(50), age varchar(10))");
 
 			db.execSQL("insert into user select id, name, remark, 'age_lala' from temp_user");
 

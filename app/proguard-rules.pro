@@ -46,6 +46,6 @@
 #-keep class com.google.gson.stream.** { *; }
 
 # Application classes that will be serialized/deserialized over Gson
--keep class com.shen.accountbook2.domain.** { *; }
+-keep class com.shen.accountbook3.domain.** { *; }
 
 ##---------------End: proguard configuration for Gson  ----------

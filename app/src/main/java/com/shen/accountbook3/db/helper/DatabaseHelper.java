@@ -75,7 +75,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			for (int i = oldVersion; i < newVersion; i++) {
 				switch (i) {
 				case 1:
-					DatabaseVersionManagement.UpgradedVersion1To2(db);
+					//DatabaseVersionManagement.UpgradedVersion1To2(db);
 					break;
 
 				default:

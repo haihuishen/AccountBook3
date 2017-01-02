@@ -26,7 +26,7 @@ import com.bigkoo.pickerview.TimePickerView;
 import com.bm.library.Info;
 import com.bm.library.PhotoView;
 import com.shen.accountbook3.R;
-import com.shen.accountbook3.Utils.BitmapUtils.CopyFileUtils;
+import com.shen.accountbook3.Utils.CopyFileUtils;
 import com.shen.accountbook3.Utils.DateTimeFormat;
 import com.shen.accountbook3.Utils.ImageFactory;
 import com.shen.accountbook3.Utils.LogUtils;

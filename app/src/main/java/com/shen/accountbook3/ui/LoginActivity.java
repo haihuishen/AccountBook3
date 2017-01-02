@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shen.accountbook3.R;
-import com.shen.accountbook3.Utils.CreateFilesUtils;
+import com.shen.accountbook3.Utils.FilesUtils;
 import com.shen.accountbook3.Utils.LogUtils;
 import com.shen.accountbook3.Utils.SharePrefUtil;
 import com.shen.accountbook3.config.Constant;
@@ -98,7 +98,8 @@ public class LoginActivity extends Activity {
                     Cursor cursor = tableEx.Query(Constant.TABLE_USER,new String[]{"name,password,sex,image,birthday,qq"}, "name=? and password=?",
                             new String[]{mUsename.getText().toString(),mPassword.getText().toString()},null,null,null);
 
-                    if (!cursor.moveToFirst() == false) {
+                    if(cursor.getCount() != 0) {
+                        cursor.moveToFirst();
                         c_name = cursor.getString(0);
                         c_password = cursor.getString(1);
                         c_sex = cursor.getInt(2);
@@ -138,7 +139,7 @@ public class LoginActivity extends Activity {
                             SharePrefUtil.saveBoolean(getBaseContext(), SharePrefUtil.KEY.AUTO_ISCHECK, mAotu.isChecked());
 
 
-                        File files = CreateFilesUtils.create(Constant.IMAGE_PATH + c_name);     // 创建"用户文件夹"
+                        File files = FilesUtils.createFile(Constant.IMAGE_PATH + c_name);     // 创建"用户文件夹"
                         if(files.exists())
                             LogUtils.i("Login当前用户文件夹"+files.getAbsolutePath());
 

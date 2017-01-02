@@ -4,7 +4,7 @@ package com.shen.accountbook3.domain;
  * Created by shen on 10/14 0014.
  */
 public class UserInfo {
-//    create table if not exists user(
+//    createFile table if not exists user(
 //            _id integer primary key autoincrement,
 //            name varchar(20) not null,
 //    password varchar(20) not null,

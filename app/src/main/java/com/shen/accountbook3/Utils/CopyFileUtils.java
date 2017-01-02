@@ -1,4 +1,4 @@
-package com.shen.accountbook3.Utils.BitmapUtils;
+package com.shen.accountbook3.Utils;
 
 import java.io.File;
 import java.io.FileInputStream;

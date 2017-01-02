@@ -29,10 +29,12 @@ public class MainActivity extends FragmentActivity{
     private Fragment mHomeFragment,mMineFragment,mOtherFragment,mShoppingFragment;
 
     private ViewPager mViewPager;
-    /** 下面的"底栏标签"(RadioButton)的 组
+    /**
+     * 下面的"底栏标签"(RadioButton)的 组
      * <p>private RadioGroup rgGroup;
      */
     private RadioGroup rgGroup;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class MainActivity extends FragmentActivity{
 
 
     private void initData(){
+
         mViewPager.setAdapter(new MyFragmentStatePageAdapter(getSupportFragmentManager()));
         mViewPager.setOffscreenPageLimit(3);    // 设置当前page左右两侧应该被保持的page数量，超过这个限制，page会被销毁重建
 
@@ -143,7 +146,7 @@ public class MainActivity extends FragmentActivity{
                 mExitTime = System.currentTimeMillis();
             } else {
                 finish();
-                System.exit(0);
+                //System.exit(0);           // 连服务都关掉
             }
             return true;
         }

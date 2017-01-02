@@ -2,14 +2,19 @@ package com.shen.accountbook3.global;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Environment;
 import android.os.Handler;
 import android.text.TextUtils;
 
 import com.shen.accountbook3.domain.UserInfo;
 import com.shen.accountbook3.xml.model.MainTypeBean;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 
 
 /**
@@ -48,6 +53,8 @@ public class AccountBookApplication extends Application {
     /** 主线程的ID*/
     private static int mainThreadId;
 
+    public static OkHttpClient mOkHttpClient;
+
     private static boolean isLogin;         // 登录状态
     private static UserInfo userInfo;        // 登录后用户信息
 
@@ -61,7 +68,10 @@ public class AccountBookApplication extends Application {
         context = getApplicationContext();
         handler = new Handler();
         mainThreadId = android.os.Process.myTid();	// 获取当前线程的id
+
+        mOkHttpClient = initOkHttpClient();
     }
+
 
     public static Context getContext() {
         return context;
@@ -79,6 +89,31 @@ public class AccountBookApplication extends Application {
         return mainThreadId;
     }
 
+
+    /********************************** 初始化 OkHttpClient  ******************************************/
+    /**
+     * 设置缓存，超时什么的
+     * 通过OkHttpClient.Builder来设置，
+     * 通过builder配置好OkHttpClient后用builder.build()来返回OkHttpClient，
+     * 所以我们通常不会调用new OkHttpClient()来得到OkHttpClient，而是通过builder.build()：
+     */
+    private OkHttpClient initOkHttpClient() {
+
+        File sdcache = Environment.getDownloadCacheDirectory();
+        int cacheSize = 10 * 1024 * 1024;
+        OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(15, TimeUnit.SECONDS)                       // 设置连接的超时时间
+                .writeTimeout(20, TimeUnit.SECONDS)                         // 设置响应的超时时间
+                .readTimeout(20, TimeUnit.SECONDS) ;                         // 请求的超时时间
+                //.cache(new Cache(sdcache.getAbsoluteFile(), cacheSize));
+
+        // 获取实力对象
+        return okHttpClient.build();
+    }
+
+    public static OkHttpClient getmOkHttpClient() {
+        return mOkHttpClient;
+    }
 
     /**********************************登录信息******************************************/
     /**

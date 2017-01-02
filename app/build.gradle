@@ -101,4 +101,6 @@ dependencies {
     compile files('F:/AndroidStudioProjects/AccountBook3/libraries/sharedsdk/ShareSDK-Wechat-Core-2.7.10.jar')
     compile files('F:/AndroidStudioProjects/AccountBook3/libraries/sharedsdk/ShareSDK-Wechat-Moments-2.7.10.jar')
     compile files('F:/AndroidStudioProjects/AccountBook3/libraries/sharedsdk/ShareSDK-YouDao-2.7.10.jar')
+    compile files('F:/AndroidStudioProjects/AccountBook3/libraries/okio-1.11.0.jar')
+    compile files('F:/AndroidStudioProjects/AccountBook3/libraries/okhttp-3.5.0.jar')
 }

@@ -1,6 +1,7 @@
 package com.shen.accountbook3.ui.fragment;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.View;
@@ -15,20 +16,23 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.lidroid.xutils.HttpUtils;
-import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.ResponseInfo;
-import com.lidroid.xutils.http.callback.RequestCallBack;
-import com.lidroid.xutils.http.client.HttpRequest;
 import com.shen.accountbook3.R;
 import com.shen.accountbook3.Utils.BitmapUtils.CacheUtils;
 import com.shen.accountbook3.Utils.BitmapUtils.MyBitmapUtils;
+import com.shen.accountbook3.Utils.InputStream2StringUtil;
 import com.shen.accountbook3.Utils.LogUtils;
-import com.shen.accountbook3.Utils.ToastUtil;
 import com.shen.accountbook3.config.Constant;
 import com.shen.accountbook3.domain.PhotosBean;
+import com.shen.accountbook3.global.AccountBookApplication;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by shen on 9/9 0009.
@@ -44,8 +48,6 @@ public class ShoppingFragment extends BaseFragment{
 
     /******************************下拉刷新布局***********************************/
     private SwipeRefreshLayout mSwipeRefreshLayout_Lv;
-    private static boolean Loading = false;           // 是否正在加载
-
 
     /******************************加载成功***********************************/
     /** 加载成功显示的layout*/
@@ -70,6 +72,8 @@ public class ShoppingFragment extends BaseFragment{
      *  }
      */
     private ArrayList<PhotosBean.Shens> mShensList;
+
+    private Handler mHandler;
 
     public ShoppingFragment() {
     }
@@ -118,7 +122,7 @@ public class ShoppingFragment extends BaseFragment{
             @Override
             public void onRefresh() {
                 //if(!Loading)
-                    getDataFromServer();
+                getDataFromServer();
             }
         });
 
@@ -129,7 +133,6 @@ public class ShoppingFragment extends BaseFragment{
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
                 LogUtils.i("第" + position + "个被点击了");
             }
         });
@@ -138,6 +141,9 @@ public class ShoppingFragment extends BaseFragment{
 
     @Override
     public void initData(){
+
+        mHandler = AccountBookApplication.getHandler();
+
         tvTitle.setText("商城");
         // mBtnLvGv.setVisibility(View.VISIBLE);
         mBtnLvGv.setVisibility(View.GONE);
@@ -156,15 +162,14 @@ public class ShoppingFragment extends BaseFragment{
             return;
         }
 
-
         // 拿缓存
         String cache = CacheUtils.getCache(Constant.PHOTOS_URL,mContext);
         if (!TextUtils.isEmpty(cache)) {
             processData(cache);
             mLayoutLoadSuccess.setVisibility(View.VISIBLE);
             mLayoutLoadError.setVisibility(View.GONE);
+            mLvPhoto.setAdapter(new PhotoAdapter());
         }else {
-            if(!Loading)
                 //填充各控件的数据
                 getDataFromServer();
         }
@@ -172,49 +177,43 @@ public class ShoppingFragment extends BaseFragment{
 
 
     /**
-     * 使用xUtils  网络
+     * 使用OkHttp  网络
      * 拿到数据
      */
     private void getDataFromServer() {
-        Loading = true;
-        LogUtils.i("开始啦");
-        // 使用xUtils  网络
-        HttpUtils utils = new HttpUtils();
-        utils.send(HttpRequest.HttpMethod.GET, Constant.PHOTOS_URL,
-                new RequestCallBack<String>() {
-
+        Request request = new Request.Builder().url(Constant.PHOTOS_URL).build();
+        AccountBookApplication.getmOkHttpClient().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                LogUtils.i("失败了:" + e.getMessage());
+                mHandler.post(new Runnable() {
                     @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        // 请求到的数据(应该都是json数据)
-                        String result = responseInfo.result;
-                        processData(result);
-                        CacheUtils.setCache(Constant.PHOTOS_URL, result, mContext);
+                    public void run() {
+                        mSwipeRefreshLayout_Lv.setRefreshing(false);
+                        mLayoutLoadSuccess.setVisibility(View.GONE);
+                        mLayoutLoadError.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                InputStream is = response.body().byteStream();
+                String result = InputStream2StringUtil.Inputstr2Str_ByteArrayOutputStream(is, "UTF-8");
+                processData(result);
+
+                LogUtils.i("成功了");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
                         mLayoutLoadSuccess.setVisibility(View.VISIBLE);
                         mLayoutLoadError.setVisibility(View.GONE);
-
-                        Loading = false;
-                        LogUtils.i("成功");
-
-                        mSwipeRefreshLayout_Lv.setRefreshing(false);
-                    }
-
-                    @Override
-                    public void onFailure(HttpException error, String msg) {
-                        // 请求失败
-                        error.printStackTrace();
-                        //ToastUtil.show(msg);
-                        ToastUtil.show("请求连接失败!");
-
-                        if(mLayoutLoadSuccess.getVisibility() == View.GONE){
-                            mLayoutLoadSuccess.setVisibility(View.GONE);
-                            mLayoutLoadError.setVisibility(View.VISIBLE);
-                        }
-                        Loading = false;
-                        LogUtils.i("失败");
-
+                        mLvPhoto.setAdapter(new PhotoAdapter());
                         mSwipeRefreshLayout_Lv.setRefreshing(false);
                     }
                 });
+            }
+        });
     }
 
     /**
@@ -226,25 +225,20 @@ public class ShoppingFragment extends BaseFragment{
      * @param result			String类型（json文件的内容）
      */
     protected void processData(String result) {
+
         // Gson: Google Json
         Gson gson = new Gson();
-
-
         PhotosBean photosBean = null;
         try {
             // 將json解析到  参数2：Javabean类字节码
             // ***返回一个 参数2的javabean类
             photosBean = gson.fromJson(result, PhotosBean.class);
         }catch (Exception e){
-            LogUtils.i("AAA",e.getMessage());
+            LogUtils.i("Gson Error:" + e.getMessage());
         }
         if(photosBean != null) {
             mShensList = photosBean.getShen();
         }
-
-        mLvPhoto.setAdapter(new PhotoAdapter());
-        // mGvPhoto.setAdapter(new PhotoAdapter());// gridview的布局结构和listview完全一致,
-        // 所以可以共用一个adapter
     }
 
     /**
@@ -353,7 +347,6 @@ public class ShoppingFragment extends BaseFragment{
                 break;
 
             case R.id.btn_retry:
-                if(!Loading)
                     getDataFromServer();
                 break;
         }

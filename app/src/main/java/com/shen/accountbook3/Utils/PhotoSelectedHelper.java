@@ -118,7 +118,7 @@ public class PhotoSelectedHelper {
                 context.getPackageName());
         if (!mediaStorageDir.exists()) {                // 文件不存在
             if (!mediaStorageDir.mkdirs()) {            // 文件创建不成功
-                LogUtils.i("OutputMediaFileUri(拍照后存放的路径):failed to create directory");
+                LogUtils.i("OutputMediaFileUri(拍照后存放的路径):failed to createFile directory");
                 return null;
             }
         }

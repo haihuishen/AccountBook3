@@ -1,6 +1,8 @@
 package com.shen.accountbook3.ui;
 
 import android.app.Activity;
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,6 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shen.accountbook3.R;
+import com.shen.accountbook3.config.Constant;
+import com.shen.accountbook3.db.biz.TableEx;
+import com.shen.accountbook3.global.AccountBookApplication;
 
 
 /**
@@ -95,29 +100,29 @@ public class RegisterActivity extends Activity{
                         TextUtils.isEmpty(mPassword.getText().toString())) {
                     Toast.makeText(getBaseContext(), "用户和密码不能为空", Toast.LENGTH_SHORT).show();
                 } else {
-//                    TableEx tableEx = new TableEx(AccountBookApplication.getContext());
-//                    Cursor cursor = tableEx.Query(Constant.TABLE_USER, new String[]{"name"}, "name=?",
-//                                new String[]{mUsename.getText().toString()},null,null,null);
-//                    String c_name = "";
-//                    if(cursor.getCount() >= 1) {
-//                        cursor.moveToNext();
-//                        c_name = cursor.getString(0);
-//                    }
-//
-//                    if(!(c_name.equals(mUsename.getText().toString()))){
-//                        try {
-//                            ContentValues values = new ContentValues();
-//                            values.put("name", mUsename.getText().toString());                        // 字段  ： 值
-//                            values.put("password", mPassword.getText().toString());
-//                            values.put("sex", Sex);
-//                            tableEx.Add(Constant.TABLE_USER, values);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                        finish();
-//                    }else{
-//                        Toast.makeText(getBaseContext(), "此用户已存在!", Toast.LENGTH_SHORT).show();
-//                    }
+                    TableEx tableEx = new TableEx(AccountBookApplication.getContext());
+                    Cursor cursor = tableEx.Query(Constant.TABLE_USER, new String[]{"name"}, "name=?",
+                                new String[]{mUsename.getText().toString()},null,null,null);
+                    String c_name = "";
+                    if(cursor.getCount() != 0) {
+                        cursor.moveToFirst();
+                        c_name = cursor.getString(0);
+                    }
+
+                    if(!(c_name.equals(mUsename.getText().toString()))){
+                        try {
+                            ContentValues values = new ContentValues();
+                            values.put("name", mUsename.getText().toString());                        // 字段  ： 值
+                            values.put("password", mPassword.getText().toString());
+                            values.put("sex", Sex);
+                            tableEx.Add(Constant.TABLE_USER, values);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        finish();
+                    }else{
+                        Toast.makeText(getBaseContext(), "此用户已存在!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

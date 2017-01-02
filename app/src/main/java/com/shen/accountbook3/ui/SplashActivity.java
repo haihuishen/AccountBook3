@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shen.accountbook3.R;
-import com.shen.accountbook3.Utils.CreateFilesUtils;
+import com.shen.accountbook3.Utils.FilesUtils;
 import com.shen.accountbook3.Utils.LogUtils;
 import com.shen.accountbook3.Utils.MemorySizeUtils;
 import com.shen.accountbook3.Utils.SharePrefUtil;
@@ -233,7 +232,7 @@ public class SplashActivity extends Activity implements Thread.UncaughtException
      * @param imageName     图片文件名(文件名)
      */
     private void initSrc(String path, String imageName){
-        File files = CreateFilesUtils.create(path);     // 创建"文件夹"
+        File files = FilesUtils.createFile(path);     // 创建"文件夹"
         File file = new File(files, imageName);
 //        if(file.exists()){
 //            return;
@@ -365,7 +364,7 @@ public class SplashActivity extends Activity implements Thread.UncaughtException
 
                     AccountBookApplication.setUserInfo(userInfo);
 
-                    File files = CreateFilesUtils.create(Constant.IMAGE_PATH + c_name);     // 创建"用户文件夹"
+                    File files = FilesUtils.createFile(Constant.IMAGE_PATH + c_name);     // 创建"用户文件夹"
                     if(files.exists())
                         LogUtils.i("SplashActivity当前用户文件夹"+files.getAbsolutePath());
                 }
@@ -419,6 +418,8 @@ public class SplashActivity extends Activity implements Thread.UncaughtException
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
         //在此处理异常， arg1即为捕获到的异常
-        Log.i("AAA", "uncaughtException   " + ex);
+        LogUtils.i("+++++++++++++++++++++ ALL Exception  ++++++++++++++++++++++++");
+        LogUtils.i("AAA:uncaughtException   " + ex);
+        LogUtils.i("+++++++++++++++++++++ ALL Exception  ++++++++++++++++++++++++");
     }
 }
