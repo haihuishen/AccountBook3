@@ -16,6 +16,26 @@ public class Constant {
     public final static String TABLE_CONSUMPTION = "consumption";
     public final static String TABLE_ASSETS = "assets";
 
+
+    // user表的字段(索引)
+    public final static int TABLE_USER__id = 0;
+    public final static int TABLE_USER_name = 1;
+    public final static int TABLE_USER_password = 2;
+    public final static int TABLE_USER_sex = 3;
+    public final static int TABLE_USER_image = 4;
+    public final static int TABLE_USER_birthday = 5;
+    public final static int TABLE_USER_qq = 6;
+
+    // user表的字段(字符)
+    public final static String TABLE_USER__id_STRING = "_id";
+    public final static String TABLE_USER_name_STRING = "name";
+    public final static String TABLE_USER_password_STRING = "password";
+    public final static String TABLE_USER_sex_STRING = "sex";
+    public final static String TABLE_USER_image_STRING = "image";
+    public final static String TABLE_USER_birthday_STRING = "birthday";
+    public final static String TABLE_USER_qq_STRING = "qq";
+    
+    /*****************************************************************************************/
     // consumption表的字段(索引)
     public final static int TABLE_CONSUMPTION__id = 0;
     public final static int TABLE_CONSUMPTION_user = 1;
@@ -132,4 +152,9 @@ public class Constant {
     public static final String PHOTOS_URL = SERVER_URL + "/AccountBook3/photos/photos_1.json";
 
 
+    public static final String REGISTER_URL = "http://192.168.23.1:8080/MyShenServer/AccountBook3/Register.do";
+
+    public static final String UPDATE_USER_INFO_URL = "http://192.168.23.1:8080/MyShenServer/AccountBook3/UpdateUserInfo.do";
+
+    public static final String UPDATE_IMAGE_URL = "http://192.168.23.1:8080/MyShenServer/AccountBook3/UpLoad.do";
 }

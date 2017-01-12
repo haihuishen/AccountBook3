@@ -5,7 +5,7 @@ package com.shen.accountbook3.domain;
  */
 public class UserInfo {
 //    createFile table if not exists user(
-//            _id integer primary key autoincrement,
+//            id bigint primary key not null,
 //            name varchar(20) not null,
 //    password varchar(20) not null,
 //    sex tinyint(1),
@@ -13,12 +13,24 @@ public class UserInfo {
 //    birthdate date,
 //    qq varchar(20)
 //    );
+
+
+
+    private Long id;
     private String userName;
     private String passWord;
     private int sex;
     private String image;
     private String birthday;
     private String qq;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getUserName() {
         return userName;

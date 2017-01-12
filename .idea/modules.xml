@@ -5,8 +5,10 @@
       <module fileurl="file://$PROJECT_DIR$/AccountBook3.iml" filepath="$PROJECT_DIR$/AccountBook3.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/CompactCalendarView/CompactCalendarView.iml" filepath="$PROJECT_DIR$/libraries/CompactCalendarView/CompactCalendarView.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/HelloCharts/HelloCharts.iml" filepath="$PROJECT_DIR$/libraries/HelloCharts/HelloCharts.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/LoadingDialog/LoadingDialog.iml" filepath="$PROJECT_DIR$/libraries/LoadingDialog/LoadingDialog.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/PhotoView/PhotoView.iml" filepath="$PROJECT_DIR$/libraries/PhotoView/PhotoView.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/loadingdialog/loadingdialog.iml" filepath="$PROJECT_DIR$/loadingdialog/loadingdialog.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/okhttputils/okhttputils.iml" filepath="$PROJECT_DIR$/libraries/okhttputils/okhttputils.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/pickerview/pickerview.iml" filepath="$PROJECT_DIR$/libraries/pickerview/pickerview.iml" />
     </modules>

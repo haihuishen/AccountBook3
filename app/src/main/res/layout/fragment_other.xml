@@ -246,53 +246,6 @@
         android:gravity="center"
         android:background="@drawable/bg_white">
 
-        <LinearLayout
-            android:id="@+id/layout_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="visible">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <ProgressBar
-                    android:id="@+id/progress_downfile"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="15dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_centerHorizontal="true"
-                    android:max="100"
-                    android:progressDrawable="@drawable/common_progressdialog_progressbar_background"/>
-                <TextView
-                    android:id="@+id/tv_progress_percent"
-                    android:layout_width="200dp"
-                    android:layout_height="15dp"
-                    android:textSize="15dp"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"/>
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp">
-                <TextView
-                    android:id="@+id/tv_filesize_Percent"
-                    android:paddingRight="10dp"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="15dp"
-                    android:layout_alignParentRight="true"
-                    android:gravity="center_horizontal|right"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"/>
-            </RelativeLayout>
-        </LinearLayout>
 
     </LinearLayout>
 </LinearLayout>

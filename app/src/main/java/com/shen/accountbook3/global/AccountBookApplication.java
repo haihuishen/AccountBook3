@@ -69,7 +69,7 @@ public class AccountBookApplication extends Application {
         handler = new Handler();
         mainThreadId = android.os.Process.myTid();	// 获取当前线程的id
 
-        mOkHttpClient = initOkHttpClient();
+        mOkHttpClient = initOkHttpClient();        // 在 Application 中定义一个，整个程序使用一个就最好的
     }
 
 
@@ -223,6 +223,4 @@ public class AccountBookApplication extends Application {
         else
             return null;
     }
-
-
 }

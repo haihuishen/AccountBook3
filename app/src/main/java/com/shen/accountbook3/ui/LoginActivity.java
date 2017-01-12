@@ -95,22 +95,25 @@ public class LoginActivity extends Activity {
                 } else {
                     TableEx tableEx = new TableEx(AccountBookApplication.getContext());
 
-                    Cursor cursor = tableEx.Query(Constant.TABLE_USER,new String[]{"name,password,sex,image,birthday,qq"}, "name=? and password=?",
+                    Cursor cursor = tableEx.Query(Constant.TABLE_USER, null, "name=? and password=?",
                             new String[]{mUsename.getText().toString(),mPassword.getText().toString()},null,null,null);
 
                     if(cursor.getCount() != 0) {
                         cursor.moveToFirst();
-                        c_name = cursor.getString(0);
-                        c_password = cursor.getString(1);
-                        c_sex = cursor.getInt(2);
 
-                        String c_image = cursor.getString(3);
-                        String c_birthday = cursor.getString(4);
-                        String c_qq = cursor.getString(5);
+                        Long _id = cursor.getLong(Constant.TABLE_USER__id);
+                        c_name = cursor.getString(Constant.TABLE_USER_name);
+                        c_password = cursor.getString(Constant.TABLE_USER_password);
+                        c_sex = cursor.getInt(Constant.TABLE_USER_sex);
+
+                        String c_image = cursor.getString(Constant.TABLE_USER_image);
+                        String c_birthday = cursor.getString(Constant.TABLE_USER_birthday);
+                        String c_qq = cursor.getString(Constant.TABLE_USER_qq);
 
                         // 登录标志，登录信息填到"全局变量"中
                         AccountBookApplication.setIsLogin(true);
                         UserInfo userInfo = new UserInfo();
+                        userInfo.setId(_id);
                         userInfo.setUserName(c_name);
                         userInfo.setPassWord(c_password);
                         userInfo.setSex(c_sex);

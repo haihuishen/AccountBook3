@@ -38,7 +38,7 @@
                 android:gravity="center_vertical"
                 android:drawableRight="@mipmap/delete"
                 android:background="@drawable/bg_et_login"
-                android:hint="请输入QQ"
+                android:hint="请输入"
                 android:textSize="25dp"/>
 
             <LinearLayout

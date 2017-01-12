@@ -3,6 +3,7 @@ package com.shen.accountbook3.ui.view;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,13 +18,17 @@ import com.shen.accountbook3.R;
  */
 public abstract class ChangeDialog extends AlertDialog implements View.OnClickListener{
 
+    public static final int EDIT_NUMBER = 1;
+    public static final int EDIT_TEXT = 2;
+
     private TextView mTvTitle;
     private EditText mEtChange;
 
     private Button mBtnConfirm;
     private Button mBtnCancel;
 
-    private String mTitle;                   // 标题
+    private String mTitle = "";                   // 标题
+    private int mInputType = 1;
 
     protected ChangeDialog(Context context) {
         super(context);
@@ -59,7 +64,13 @@ public abstract class ChangeDialog extends AlertDialog implements View.OnClickLi
     }
 
     private void initData(){
-        mTvTitle.setText("更改QQ");
+        mTvTitle.setText(mTitle);
+
+        if(mInputType == EDIT_NUMBER) {
+                mEtChange.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+        }else if(mInputType == EDIT_TEXT) {
+                mEtChange.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+        }
 
         // 设置此窗口的设置
         Window window = this.getWindow();
@@ -92,6 +103,25 @@ public abstract class ChangeDialog extends AlertDialog implements View.OnClickLi
             mTitle = title;
     }
 
+    /**
+     * 设置"编辑框，输入类型"
+     * number : InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL
+     * text   : InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL
+     * @param inputType    编辑框，输入类型
+     */
+    public void setEditInputType(int inputType){
+        if(inputType == EDIT_NUMBER) {
+            if (mEtChange != null)                // 在子类中，new 了窗口，马上设置这个,会是"空指针";因为 .show() 之后才 onCreate
+                mEtChange.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+            else
+                mInputType = inputType;
+        }else if(inputType == EDIT_TEXT) {
+            if (mEtChange != null)                // 在子类中，new 了窗口，马上设置这个,会是"空指针";因为 .show() 之后才 onCreate
+                mEtChange.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+            else
+                mInputType = inputType;
+        }
+    }
 
     /**
      * 点击"确定按钮"干的事情

@@ -279,12 +279,12 @@ public class SplashActivity extends Activity implements Thread.UncaughtException
 
         //  获取该程序的安装包路径
         String path=getApplicationContext().getPackageResourcePath();
-        File file3 = this.getDatabasePath("AccountBook2.db").getParentFile();
-        File file2 = this.getDatabasePath("AccountBook2.db");
-        File file1 = new File("data/data/com.shen.accountbook2/databases/AccountBook2.db");
-        LogUtils.i("file3:"+file3.getAbsolutePath());           // /data/data/com.shen.accountbook2/databases
-        LogUtils.i("file2:"+file2.getAbsolutePath());           // /data/data/com.shen.accountbook2/databases/AccountBook2.db
-        LogUtils.i("path:"+path);                               // /data/app/com.shen.accountbook2-1.apk
+        File file3 = this.getDatabasePath("AccountBook3.db").getParentFile();
+        File file2 = this.getDatabasePath("AccountBook3.db");
+        File file1 = new File("data/data/com.shen.accountbook3/databases/AccountBook3.db");
+        LogUtils.i("file3:"+file3.getAbsolutePath());           // /data/data/com.shen.accountbook3/databases
+        LogUtils.i("file2:"+file2.getAbsolutePath());           // /data/data/com.shen.accountbook3/databases/AccountBook3.db
+        LogUtils.i("path:"+path);                               // /data/app/com.shen.accountbook3-1.apk
 
         if(!MemorySizeUtils.externalMemoryAvailable())                // 判断SDCard是否可用
             return;
@@ -300,7 +300,7 @@ public class SplashActivity extends Activity implements Thread.UncaughtException
 
             //3,将读取的内容写入到指定文件夹的文件中去
             // ***拿到"file文件"的"输出流"
-            fos = new FileOutputStream(Constant.CACHE_IMAGE_PATH+"AccountBook.db");
+            fos = new FileOutputStream(Constant.CACHE_IMAGE_PATH+"AccountBook3.db");
 
             //4,每次的读取内容大小
             byte[] bs = new byte[1024];
@@ -338,22 +338,24 @@ public class SplashActivity extends Activity implements Thread.UncaughtException
             // System.out.println( "shen:"+mSp_user + ":" + mSp_password );
             // 从数据库查询
             mTableEx = new TableEx(this.getApplication());
-            Cursor cursor = mTableEx.Query(Constant.TABLE_USER,new String[]{"name,password,sex,image,birthday,qq"}, "name=? and password=?",
+            Cursor cursor = mTableEx.Query(Constant.TABLE_USER, null, "name=? and password=?",
                     new String[]{mSp_user,mSp_password},null,null,null);
 
             if(!cursor.moveToFirst() == false) {
-                String c_name = cursor.getString(0);
-                String c_password = cursor.getString(1);
-                int c_sex = cursor.getInt(2);
+                Long _id = cursor.getLong(Constant.TABLE_USER__id);
+                String c_name = cursor.getString(Constant.TABLE_USER_name);
+                String c_password = cursor.getString(Constant.TABLE_USER_password);
+                int c_sex = cursor.getInt(Constant.TABLE_USER_sex);
 
-                String c_image = cursor.getString(3);
-                String c_birthday = cursor.getString(4);
-                String c_qq = cursor.getString(5);
+                String c_image = cursor.getString(Constant.TABLE_USER_image);
+                String c_birthday = cursor.getString(Constant.TABLE_USER_birthday);
+                String c_qq = cursor.getString(Constant.TABLE_USER_qq);
 
                 // System.out.println( "shen:"+c_name + ":" + c_password + ":" + c_sex);
                 if(mSp_user.equals(c_name) && mSp_password.equals(c_password)){
                     AccountBookApplication.setIsLogin(true);
                     UserInfo userInfo = new UserInfo();
+                    userInfo.setId(_id);
                     userInfo.setUserName(c_name);
                     userInfo.setPassWord(c_password);
                     userInfo.setSex(c_sex);
@@ -418,8 +420,8 @@ public class SplashActivity extends Activity implements Thread.UncaughtException
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
         //在此处理异常， arg1即为捕获到的异常
-        LogUtils.i("+++++++++++++++++++++ ALL Exception  ++++++++++++++++++++++++");
-        LogUtils.i("AAA:uncaughtException   " + ex);
-        LogUtils.i("+++++++++++++++++++++ ALL Exception  ++++++++++++++++++++++++");
+        LogUtils.i("+++++++++++++++++++++++++++++++++++++++++++++  Exception  ++++++++++++++++++++++++++++++++++++++++++++++++");
+        LogUtils.i("AAA:   " + ex);
+        LogUtils.i("+++++++++++++++++++++++++++++++++++++++++++++  Exception  ++++++++++++++++++++++++++++++++++++++++++++++++");
     }
 }

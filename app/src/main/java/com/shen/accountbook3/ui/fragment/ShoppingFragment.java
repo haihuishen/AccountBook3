@@ -19,19 +19,18 @@ import com.google.gson.Gson;
 import com.shen.accountbook3.R;
 import com.shen.accountbook3.Utils.BitmapUtils.CacheUtils;
 import com.shen.accountbook3.Utils.BitmapUtils.MyBitmapUtils;
-import com.shen.accountbook3.Utils.InputStream2StringUtil;
 import com.shen.accountbook3.Utils.LogUtils;
+import com.shen.accountbook3.Utils.MyOkHttpUtils;
+import com.shen.accountbook3.Utils.ToastUtil;
 import com.shen.accountbook3.config.Constant;
 import com.shen.accountbook3.domain.PhotosBean;
 import com.shen.accountbook3.global.AccountBookApplication;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.Request;
 import okhttp3.Response;
 
 /**
@@ -73,7 +72,7 @@ public class ShoppingFragment extends BaseFragment{
      */
     private ArrayList<PhotosBean.Shens> mShensList;
 
-    private Handler mHandler;
+    private Handler mHandler ;
 
     public ShoppingFragment() {
     }
@@ -121,8 +120,11 @@ public class ShoppingFragment extends BaseFragment{
         mSwipeRefreshLayout_Lv.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //if(!Loading)
-                getDataFromServer();
+                try {
+                    getDataFromServer();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -140,7 +142,7 @@ public class ShoppingFragment extends BaseFragment{
 
 
     @Override
-    public void initData(){
+    public void initData() throws IOException {
 
         mHandler = AccountBookApplication.getHandler();
 
@@ -156,7 +158,7 @@ public class ShoppingFragment extends BaseFragment{
     }
 
     @Override
-    protected void lazyLoad() {
+    protected void lazyLoad() throws IOException {
         LogUtils.i("ShoppingFragment:========isPrepared:"+isPrepared+"=======isVisible:"+isVisible);
         if(!isPrepared || !isVisible) {
             return;
@@ -170,8 +172,8 @@ public class ShoppingFragment extends BaseFragment{
             mLayoutLoadError.setVisibility(View.GONE);
             mLvPhoto.setAdapter(new PhotoAdapter());
         }else {
-                //填充各控件的数据
-                getDataFromServer();
+            //填充各控件的数据
+            getDataFromServer();
         }
     }
 
@@ -180,40 +182,43 @@ public class ShoppingFragment extends BaseFragment{
      * 使用OkHttp  网络
      * 拿到数据
      */
-    private void getDataFromServer() {
-        Request request = new Request.Builder().url(Constant.PHOTOS_URL).build();
-        AccountBookApplication.getmOkHttpClient().newCall(request).enqueue(new Callback() {
+    private void getDataFromServer() throws IOException {
+
+        MyOkHttpUtils.getInstence().requestGetAsyn(Constant.PHOTOS_URL, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                LogUtils.i("失败了:" + e.getMessage());
+
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         mSwipeRefreshLayout_Lv.setRefreshing(false);
                         mLayoutLoadSuccess.setVisibility(View.GONE);
                         mLayoutLoadError.setVisibility(View.VISIBLE);
+
+                        ToastUtil.show("加载失败");
                     }
                 });
+
+
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                InputStream is = response.body().byteStream();
-                String result = InputStream2StringUtil.Inputstr2Str_ByteArrayOutputStream(is, "UTF-8");
-                processData(result);
+                PhotosBean photosBean = (PhotosBean) MyOkHttpUtils.fromJson(response, PhotosBean.class);
+                mShensList = photosBean.getShen();
 
-                LogUtils.i("成功了");
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
+                        mSwipeRefreshLayout_Lv.setRefreshing(false);
                         mLayoutLoadSuccess.setVisibility(View.VISIBLE);
                         mLayoutLoadError.setVisibility(View.GONE);
                         mLvPhoto.setAdapter(new PhotoAdapter());
-                        mSwipeRefreshLayout_Lv.setRefreshing(false);
                     }
                 });
             }
         });
+
     }
 
     /**
@@ -250,17 +255,11 @@ public class ShoppingFragment extends BaseFragment{
      */
     class PhotoAdapter extends BaseAdapter {
 
-        // BitmapUtils 是  xUtils的三级缓存图片
-        // private BitmapUtils mBitmapUtils;
         private MyBitmapUtils mBitmapUtils;
 
         public PhotoAdapter() {
             mBitmapUtils = new MyBitmapUtils();
 
-            // xUtils的三级缓存图片
-            // mBitmapUtils = new BitmapUtils(mContext);
-            // 设置默认图片
-            // mBitmapUtils.configDefaultLoadingImage(R.mipmap.pic_item_list_default);
         }
 
         @Override
@@ -347,7 +346,11 @@ public class ShoppingFragment extends BaseFragment{
                 break;
 
             case R.id.btn_retry:
+                try {
                     getDataFromServer();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
 

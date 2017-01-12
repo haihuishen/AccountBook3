@@ -33,6 +33,7 @@ import com.shen.accountbook3.Utils.LogUtils;
 import com.shen.accountbook3.config.Constant;
 import com.shen.accountbook3.db.biz.TableEx;
 import com.shen.accountbook3.global.AccountBookApplication;
+import com.shen.accountbook3.ui.view.DeleteDialog;
 import com.shen.accountbook3.ui.view.MyMenuRecyclerView.AccounBookProvider;
 import com.shen.accountbook3.ui.view.MyMenuRecyclerView.RecyclerViewCursorAdapter;
 import com.shen.accountbook3.ui.view.MyMenuRecyclerView.SlidingButtonView;
@@ -45,7 +46,7 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.OnClickListener;
 import static android.view.View.VISIBLE;
 
-
+// 消费明细
 //public class ReportForD_Activity extends AppCompatActivity implements Adapter.IonSlidingViewClickListener{
 public class ConsumerDetails_Activity extends Activity implements OnClickListener, LoaderManager.LoaderCallbacks<Cursor>{
 
@@ -85,6 +86,10 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
     private static int mCurrentState;
     public static String mCurrentTime;
     public static String mCurrentContent;
+
+
+
+    private DeleteDialog mDeleteDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,20 +218,38 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
             }
 
             @Override
-            public void onDeleteBtnCilck(View view, int position,String id, String image) {
-                LogUtils.i("删除项："+position);
-                LogUtils.i("删除项___________________id："+id);
+            public void onDeleteBtnCilck(View view, final int position, final String id, final String image) {
 
-                int i = getContentResolver().delete(AccounBookProvider.URI_ACCOUNTBOOK3_ALL,"_id=? and user=?",
-                        new String[]{id, AccountBookApplication.getUserInfo().getUserName()});
-                // 删除对应的图片!
-                if(i > 0 && !TextUtils.isEmpty(image)){
-                    File f = new File(Constant.IMAGE_PATH+AccountBookApplication.getUserInfo().getUserName(), image);
-                    if(f.exists())
-                        f.delete();
-                }
+                mDeleteDialog = new DeleteDialog(mContext) {  // 注意这个上下文，用父的，还是自己的，全局的
+                    @Override
+                    public void confirm() {
 
-                LogUtils.i("删除项___________________i："+i);
+                        LogUtils.i("删除项："+position);
+                        LogUtils.i("删除项___________________id："+id);
+
+                        int i = getContentResolver().delete(AccounBookProvider.URI_ACCOUNTBOOK3_ALL,"_id=? and user=?",
+                                new String[]{id, AccountBookApplication.getUserInfo().getUserName()});
+                        // 删除对应的图片!
+                        if(i > 0 && !TextUtils.isEmpty(image)){
+                            File f = new File(Constant.IMAGE_PATH+AccountBookApplication.getUserInfo().getUserName(), image);
+                            if(f.exists())
+                                f.delete();
+                        }
+
+                        LogUtils.i("删除项___________________i："+i);
+
+
+                        mDeleteDialog.dismiss();
+                    }
+                    @Override
+                    public void cancel() {
+                        mDeleteDialog.dismiss();
+                    }
+                };
+
+                mDeleteDialog.setTitle("是否\"删除\"");
+                mDeleteDialog.show();
+
             }
 
             @Override
@@ -272,6 +295,7 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());           // 默认的"项"动作的"动画"
 
     }
+
 
     /**
      * 在我们使用CurSorLoader时大家都会考虑一种情况的处理—–当数据库发生变化时如何自动刷新当前UI，
@@ -491,6 +515,13 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
                 return true;
             }
 
+            if(mDeleteDialog != null){
+                if(mDeleteDialog.isShowing()) {
+                    mDeleteDialog.dismiss();
+                    return true;
+                }
+            }
+
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
             bundle.putInt("type", mCurrentState);
@@ -528,6 +559,7 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
         private Context mContext;
 
         private Cursor mCursor;
+
 
         // 监听，基本是给子类实现的接口
         private IonSlidingViewClickListener mIonSlidingViewClickListener;
@@ -759,6 +791,8 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
                 ((SlidingButtonView) itemView).setSlidingButtonListener(MyRecyclerViewCursorAdapter.this);
             }
         }
+
+
 
         /*********************************************************************************************************/
 

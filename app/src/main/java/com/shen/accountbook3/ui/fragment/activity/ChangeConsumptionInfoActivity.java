@@ -302,7 +302,10 @@ public class ChangeConsumptionInfoActivity extends Activity implements View.OnCl
 
         mImageChange = false;
         if(!TextUtils.isEmpty(mImage)) {
-            bitmap = ImageFactory.getBitmap(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getUserName() + File.separator + mImage);
+            if (new File(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getUserName(), mImage).exists())     // 有这个文件，才生成位图
+                bitmap = ImageFactory.getBitmap(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getUserName() + File.separator + mImage);
+            else
+                bitmap = ImageFactory.getBitmap(Constant.CACHE_IMAGE_PATH + "no_preview_picture.png");
         }else {
             bitmap = ImageFactory.getBitmap(Constant.CACHE_IMAGE_PATH + "no_preview_picture.png");
         }

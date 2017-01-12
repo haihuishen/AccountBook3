@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,8 +26,11 @@ import android.widget.TextView;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.bigkoo.pickerview.TimePickerView;
 import com.bm.library.PhotoView;
+import com.google.gson.Gson;
 import com.shen.accountbook3.R;
 import com.shen.accountbook3.Utils.ImageFactory;
+import com.shen.accountbook3.Utils.LogUtils;
+import com.shen.accountbook3.Utils.MyOkHttpUtils;
 import com.shen.accountbook3.Utils.PhotoSelectedHelper;
 import com.shen.accountbook3.Utils.SetImageUtil;
 import com.shen.accountbook3.Utils.ToastUtil;
@@ -37,12 +41,18 @@ import com.shen.accountbook3.global.AccountBookApplication;
 import com.shen.accountbook3.ui.ChangePasswordActivity;
 import com.shen.accountbook3.ui.view.ChangeDialog;
 import com.shen.accountbook3.ui.view.CircleImageView;
+import com.shen.loadingdialog.View.SpotsDialog;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 import static android.widget.PopupWindow.OnDismissListener;
 
@@ -60,6 +70,7 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
     private ImageButton btnBack;
     private Button btnFinish;
 
+    private RelativeLayout layoutId;            // _id布局
     private RelativeLayout layoutHeadImage;     // 头像布局
     private RelativeLayout layoutUser;           // 用户名布局
     private RelativeLayout layoutSex;            // 性别布局
@@ -67,6 +78,7 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
     private RelativeLayout layoutQQ;             // 输入QQ布局
     private RelativeLayout layoutPassword;      // 更密码
 
+    private TextView tvId;
     private TextView tvUser;
     private TextView tvSex;
     private TextView tvBirthday;
@@ -78,6 +90,7 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
     private CircleImageView civHead;
 
     private ChangeDialog changeDialogQQ;
+    private ChangeDialog changeDialogUserName;
 
     /** "性别"条件选择器*/
     OptionsPickerView pvOptionsSex;
@@ -113,6 +126,7 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
     AlphaAnimation in;
     AlphaAnimation out;
 
+    private Handler mHandler = AccountBookApplication.getHandler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,6 +148,7 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
         btnFinish = (Button) findViewById(R.id.btn_title_confirm);
 
         layoutHeadImage = (RelativeLayout) findViewById(R.id.layout_head_image);
+        layoutId = (RelativeLayout) findViewById(R.id.layout_id);
         layoutUser = (RelativeLayout) findViewById(R.id.layout_user);
         layoutSex = (RelativeLayout) findViewById(R.id.layout_sex);
         layoutBirthday = (RelativeLayout) findViewById(R.id.layout_birthday);
@@ -142,6 +157,7 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
 
         civHead = (CircleImageView) findViewById(R.id.Circle_Image_head);
 
+        tvId = (TextView) findViewById(R.id.tv_id);
         tvUser = (TextView) findViewById(R.id.tv_user);
         tvSex = (TextView) findViewById(R.id.tv_sex);
         tvBirthday = (TextView) findViewById(R.id.tv_birthdate);
@@ -198,6 +214,7 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
         UserInfo userInfo = AccountBookApplication.getUserInfo();
 
         if(userInfo != null){
+            tvId.setText(userInfo.getId()+"");
             tvUser.setText(userInfo.getUserName());
             tvSex.setText(userInfo.getSex() == 1 ? "男" : "女");
             tvBirthday.setText(userInfo.getBirthday());
@@ -399,6 +416,27 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
     /**
      * 显示"更改框"
      */
+    private void showDialogUserName(){
+        changeDialogUserName = new ChangeDialog(mContext) {  // 注意这个上下文，用父的，还是自己的，全局的
+            @Override
+            public void confirm(String text) {
+                tvUser.setText(text);
+                changeDialogUserName.dismiss();
+            }
+            @Override
+            public void cancel() {
+                changeDialogUserName.dismiss();
+            }
+        };
+
+        changeDialogUserName.setTitle("更改\"用户名\"");
+        changeDialogUserName.setEditInputType(ChangeDialog.EDIT_TEXT);
+        changeDialogUserName.show();
+    }
+
+    /**
+     * 显示"更改框"
+     */
     private void showDialogQQ(){
         changeDialogQQ = new ChangeDialog(mContext) {  // 注意这个上下文，用父的，还是自己的，全局的
             @Override
@@ -412,17 +450,19 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
             }
         };
 
-        // changeDialogQQ.setTitle("更改QQ");
+        changeDialogQQ.setTitle("更改\"QQ\"");
+        changeDialogQQ.setEditInputType(ChangeDialog.EDIT_NUMBER);
         changeDialogQQ.show();
     }
 
 
     /**
-     * 点击"确认"按钮
+     * 点击"完成"按钮
      */
     private void confirm(){
-        UserInfo userInfo = new UserInfo();
+        final UserInfo userInfo = new UserInfo();
 
+        userInfo.setId(Long.valueOf(tvId.getText().toString()));
         userInfo.setUserName(tvUser.getText().toString());
         userInfo.setSex(tvSex.getText().toString().equals("男")? 1 : 0);
         userInfo.setImage(tempImagePath);
@@ -430,21 +470,66 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
         userInfo.setQq(tvQQ.getText().toString());
         userInfo.setPassWord(AccountBookApplication.getUserInfo().getPassWord());
 
-        TableEx tableEx = new TableEx(this.getApplication());
-        ContentValues values = new ContentValues();
-        values.put("sex", userInfo.getSex());
-        values.put("image", userInfo.getImage());
-        values.put("birthday", userInfo.getBirthday());
-        values.put("qq", userInfo.getQq());
+        // 将用户的数据生成 json
+        Gson gson = new Gson();
+        String json = gson.toJson(userInfo);
+        LogUtils.i(json);
 
-        int num = tableEx.Update(Constant.TABLE_USER, values, "name=? and password=?", new String[]{userInfo.getUserName(),userInfo.getPassWord()});
-        if(num != 0) {
-            AccountBookApplication.setUserInfo(userInfo);
-            ToastUtil.show("修改成功");
-        }
-        else {
-            ToastUtil.show("修改失败");
-        }
+        final SpotsDialog checkDialog = new SpotsDialog(mContext,"正在修改资料");
+        checkDialog.show();
+
+        // 将数据传递到网站，正确插入后，回应true，将数据插入本地
+        MyOkHttpUtils.getInstence().requestPostAsyn(Constant.UPDATE_USER_INFO_URL,
+                MyOkHttpUtils.JSON, json, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtil.show("链接失败");
+                        checkDialog.dismiss();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.body().string().equals("true")){
+                    TableEx tableEx = new TableEx(mContext);
+                    ContentValues values = new ContentValues();
+                    values.put("name", userInfo.getUserName());
+                    values.put("sex", userInfo.getSex());
+                    values.put("image", userInfo.getImage());
+                    values.put("birthday", userInfo.getBirthday());
+                    values.put("qq", userInfo.getQq());
+
+                    final int num = tableEx.Update(Constant.TABLE_USER, values, "_id=? and password=?", new String[]{userInfo.getId()+"", userInfo.getPassWord()});
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(num != 0) {
+                                AccountBookApplication.setUserInfo(userInfo);
+                                ToastUtil.show("修改成功");
+                                checkDialog.dismiss();
+                            }
+                            else {
+                                ToastUtil.show("修改失败");
+                                checkDialog.dismiss();
+                            }
+                        }
+                    });
+
+                }else{
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ToastUtil.show("修改失败");
+                            checkDialog.dismiss();
+                        }
+                    });
+                }
+            }
+        });
     }
 
 
@@ -463,7 +548,7 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
                 finish();
                 break;
 
-            case R.id.btn_title_confirm:                               // 确认
+            case R.id.btn_title_confirm:                               // 完成按钮
                 confirm();
                 break;
 
@@ -471,7 +556,11 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
                 showPopupWindow(SHOW_POP);
                 break;
 
-            case R.id.layout_user:                                      // 名称是不能改的
+            case R.id.layout_user:                                         // 名称更改
+                if(changeDialogUserName == null)
+                    showDialogUserName();
+                else
+                    changeDialogUserName.show();
                 break;
 
             case R.id.layout_sex:                                        // 性别更改
@@ -562,6 +651,64 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
         }
     }
 
+    /**
+     * 将图片上传到网络
+     * @param imagePath 图片在手机上的路径
+     */
+    private void upLoadImage(String imagePath){
+        final SpotsDialog checkDialog = new SpotsDialog(mContext,"正在上传图片");
+        checkDialog.show();
+
+        MyOkHttpUtils.getInstence().requestPostAsyn(Constant.UPDATE_IMAGE_URL, MyOkHttpUtils.MEDIA_TYPE_PNG, imagePath, new Callback() {
+            @Override
+            public void onFailure(Call call, final IOException e) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(checkDialog.isShowing())
+                            checkDialog.dismiss();
+                        LogUtils.i("upLoadImage:failure:"+e.getMessage());
+                        ToastUtil.show("图片上传失败");
+                    }
+                });
+
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        UserInfo userInfo = AccountBookApplication.getUserInfo();     // 全局变量中头像图片的路径
+                        userInfo.setImage(tempImagePath);
+                        AccountBookApplication.setUserInfo(userInfo);
+
+                        Long id = userInfo.getId();                                   // 修改数据库中 头像图片路径
+                        String passWord = userInfo.getPassWord();
+
+                        TableEx tableEx = new TableEx(mContext);
+                        ContentValues values = new ContentValues();
+                        values.put("image", tempImagePath);
+
+                        int num = tableEx.Update(Constant.TABLE_USER, values, "_id=? and password=?",
+                                new String[]{id+"", passWord});
+
+                        if(num >= 0){
+                            ToastUtil.show("图片上传成功");
+                        }
+                        if(checkDialog.isShowing())
+                            checkDialog.dismiss();
+                        try {
+                            LogUtils.i("upLoadImage:true:"+response.body().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+            }
+        });
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -580,7 +727,6 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
                         AccountBookApplication.getUserInfo().getUserName());
             }
 
-
         } else if (requestCode == mPhotoSelectedHelper.PHOTO_CROP) {    // "裁剪"的返回
             if (!(resultCode == RESULT_OK)) {
                 return;
@@ -588,6 +734,9 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
             tempImagePath = mPhotoSelectedHelper.getCropPath();
 
             civHead.setImageBitmap(ImageFactory.getBitmap(tempImagePath));
+
+            upLoadImage(tempImagePath);                                 // 上传图片到网络
+
             // 上传到网站
             // if (cropPath != null) {
             //     pDialog.show();
@@ -606,17 +755,6 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
                 Uri uri = data.getData();
                 if (uri != null) {
                    String path = SetImageUtil.getPath(this, uri);       // 从"相册"中获取"图片"的路径要解析的
-                    // 上传到网站
-                    //         if (path != null) {
-                    //             pDialog.show();
-                    //             new Thread() {
-                    //                 @Override
-                    //                 public void run() {
-                    //                     super.run();
-                    //                     upload(path, "pic");
-                    //                 }
-                    //             }.start();
-                    //         }
 
                     File mediaFile = new File(path);
                     //Uri u = Uri.parse("/storage/emulated/0/Pictures/com.shen.accountbook3/test_20161031_014039.jpg");

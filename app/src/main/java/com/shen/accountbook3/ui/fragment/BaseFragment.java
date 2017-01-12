@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.io.IOException;
+
 /**
  * 三个"标签页"的基类<p>
  * viewpage的每一个"标签"
@@ -51,7 +53,11 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
         View view = initUI();
         initListener();
-        initData();
+        try {
+            initData();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return view;
     }
 
@@ -72,7 +78,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 	 *  
 	 *  空的,等我们写
 	 */
-	public abstract void initData();
+	public abstract void initData() throws IOException;
 
 
 
@@ -97,14 +103,18 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * onVisiable，即fragment被设置为可见时调用
      */
     protected void onVisible(){
-        lazyLoad();
+        try {
+            lazyLoad();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * 子类去实现<p>
      *     加载数据，重新加载数据
      */
-    protected abstract void lazyLoad();
+    protected abstract void lazyLoad() throws IOException;
 
     /**
      * onInvisible，即fragment被设置为不可见时调用

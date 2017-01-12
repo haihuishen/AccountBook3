@@ -46,6 +46,29 @@
             android:layout_height="15dp"
             android:background="@color/translucent"/>
         <RelativeLayout
+            android:id="@+id/layout_id"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_whiteandorange_stroke_black">
+            <TextView
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="id:"
+                android:textColor="@color/black"/>
+            <TextView
+                android:id="@+id/tv_id"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="15dp"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="id"
+                android:textColor="@color/black"/>
+        </RelativeLayout>
+        <RelativeLayout
             android:id="@+id/layout_user"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"

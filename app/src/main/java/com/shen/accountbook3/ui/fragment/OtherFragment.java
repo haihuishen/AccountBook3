@@ -2,22 +2,16 @@ package com.shen.accountbook3.ui.fragment;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.shen.accountbook3.R;
 import com.shen.accountbook3.Utils.AppUtils;
 import com.shen.accountbook3.Utils.FileSizeUtils;
-import com.shen.accountbook3.Utils.InputStream2StringUtil;
 import com.shen.accountbook3.Utils.LogUtils;
 import com.shen.accountbook3.Utils.MemorySizeUtils;
+import com.shen.accountbook3.Utils.MyOkHttpUtils;
 import com.shen.accountbook3.Utils.ToFormatUtil;
 import com.shen.accountbook3.Utils.ToastUtil;
 import com.shen.accountbook3.config.Constant;
@@ -27,17 +21,15 @@ import com.shen.accountbook3.global.AccountBookApplication;
 import com.shen.accountbook3.service.DownAPKService;
 import com.shen.accountbook3.ui.view.CommonProgressDialog;
 import com.shen.accountbook3.ui.view.VersionUpdateDialog;
+import com.shen.loadingdialog.View.SpotsDialog;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.NumberFormat;
 import java.util.Random;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.Request;
 import okhttp3.Response;
 
 /**
@@ -51,23 +43,11 @@ public class OtherFragment extends BaseFragment {
     // 标志位，标志已经初始化完成。
     private boolean isPrepared;
 
-    /** 更新新版本的状态码*/
-    protected static final int UPDATE_VERSION = 100;
-    /** 当前是最新版本*/
-    protected static final int LATEST_VERSION = 101;
-    /** 设置进度条的当前进度*/
-    protected static final int PROGRESS_PERCENT = 102;
-    /** 隐藏进度条*/
-    protected static final int PROGRESS_GONE = 103;
-
-
-
     private String mCurrentVersionName;         // 当前版本名称
     private int mCurrentVersionCode;         // 当前版本号
 
     /******************************标题***********************************/
     private TextView tvTitle;
-
 
     private TextView mTvAddTest;             // 添加测试数据
     private TextView mTvCheckVersion;        // "检查版本"
@@ -91,6 +71,7 @@ public class OtherFragment extends BaseFragment {
 
     private VersionUpdateDialog mVersionUpdateDialog;       // "更新窗口"对话框
 
+    /****************************** 添加测试数据 ***********************************/
     CommonProgressDialog mDialog;                               // 进度条对话框
     Thread thread;
     boolean mStop;                                              // 线程停止标志
@@ -103,55 +84,11 @@ public class OtherFragment extends BaseFragment {
     private TextView mTvAppUserResourceLocation;                // 当前用户资源存放位置
     private TextView mTvAppUserResourceSize;                    // 资源占用
 
-    /******************************下载文件的进度条**************************/
-    private LinearLayout mLvProgress;
-    private ProgressBar mProgressBar;
-    private TextView mTvProgressPercent;                        // 进度条上的百分比
-    private TextView mTvFileSizePercent;
 
+    private Handler mHandler;
 
     public OtherFragment() {
     }
-
-
-    private Handler mHandler = new Handler(){
-        @Override
-        //alt+ctrl+向下箭头,向下拷贝相同代码
-        public void handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case UPDATE_VERSION:
-                    mTvVersionState.setText("最新版本:"+ msg.obj);
-                    //弹出对话框,提示用户更新
-                    showVersionUpdateDialog(AppUtils.getVersionName(mContext),mUpdateVersionInfo.versionName,mUpdateVersionInfo.versionDes);
-                    break;
-                case LATEST_VERSION:
-                    ToastUtil.show("当前是最新版本");
-                    mTvVersionState.setText("当前是最新版本");
-                    break;
-                case PROGRESS_PERCENT:
-                    // Activityon在Destroy之前，activity#isFinishing返回false，
-                    // Activityon在Destroy之后，返回true。
-                    if (!mActivity.isFinishing()){
-                        if(mLvProgress.getVisibility() == View.GONE)
-                            mLvProgress.setVisibility(View.VISIBLE);
-                        mProgressBar.setProgress(msg.getData().getInt("ProgressPercent"));
-                        mTvProgressPercent.setText(msg.getData().getInt("ProgressPercent")+"%");
-                        mTvFileSizePercent.setText(msg.getData().getString("FileSizePercent"));
-                    }
-                    break;
-                case PROGRESS_GONE:
-                    // Activityon在Destroy之前，activity#isFinishing返回false，
-                    // Activityon在Destroy之后，返回true。
-                    if (!mActivity.isFinishing()){
-                        if(mLvProgress.getVisibility() == View.VISIBLE)
-                            mLvProgress.setVisibility(View.GONE);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
 
     @Override
     public View initUI() {
@@ -175,11 +112,6 @@ public class OtherFragment extends BaseFragment {
         mTvAppUserResourceLocation = (TextView) view.findViewById(R.id.tv_app_user_resource_location);
         mTvAppUserResourceSize = (TextView) view.findViewById(R.id.tv_app_user_resource_size);
 
-        /******************************下载文件的进度条**************************/
-        mLvProgress = (LinearLayout) view.findViewById(R.id.layout_progress);
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progress_downfile);
-        mTvProgressPercent = (TextView) view.findViewById(R.id.tv_progress_percent);
-        mTvFileSizePercent = (TextView) view.findViewById(R.id.tv_filesize_Percent);
 
         return view;
     }
@@ -191,7 +123,9 @@ public class OtherFragment extends BaseFragment {
     }
 
     @Override
-    public void initData() {
+    public void initData() throws IOException {
+        mHandler = AccountBookApplication.getHandler();
+
         tvTitle.setText("其他");
         mStop = false;
 
@@ -253,7 +187,8 @@ public class OtherFragment extends BaseFragment {
     }
 
     /**
-     * 弹出对话框,提示用户更新
+     * 弹出对话框,提示用户更新<p>
+     * 使用 service 来下载安装文件
      *
      */
     private void showVersionUpdateDialog(String currentVersionName, String newVersionName, String versionDescribe){
@@ -269,7 +204,7 @@ public class OtherFragment extends BaseFragment {
             @Override
             public void up() {
                 // downloadApk();
-
+                // 使用 service 来"下载文件，安装文件"
                 Intent intent = new Intent(mActivity, DownAPKService.class);
                 intent.putExtra("apk_url",mUpdateVersionInfo.downloadUrl);
                 intent.putExtra("apk_dir",Constant.APP_RESOURCE_PATH);
@@ -298,198 +233,49 @@ public class OtherFragment extends BaseFragment {
      * 服务器版本号
      * 新版本apk下载地址
      */
-    private void checkVersion() {
+    private void checkVersion() throws IOException {
+        final SpotsDialog checkDialog = new SpotsDialog(mActivity,"正在检查中");
+        checkDialog.show();
 
-        Request request = new Request.Builder().url(Constant.APK_URL).build();
-        AccountBookApplication.getmOkHttpClient().newCall(request).enqueue(new Callback() {
+        MyOkHttpUtils.getInstence().requestGetAsyn(Constant.APK_URL, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                LogUtils.i("失败了:" + e.getMessage());
-                ToastUtil.show("检测失败!");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtil.show("连接失败");
+                        LogUtils.i("连接失败");
+                        checkDialog.dismiss();
+                    }
+                });
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                InputStream is = response.body().byteStream();
-                String result = InputStream2StringUtil.Inputstr2Str_ByteArrayOutputStream(is, "UTF-8");
-                processData(result);
+                mUpdateVersionInfo = (UpdateVersionInfo) MyOkHttpUtils.fromJson(response, UpdateVersionInfo.class);
 
-                LogUtils.i("检测成功了");
+                LogUtils.i("json String:\n" + mUpdateVersionInfo.toString());
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 比对版本号(服务器版本号>本地版本号,提示用户更新)
+                        if(mCurrentVersionCode < Integer.parseInt(mUpdateVersionInfo.versionCode)){
+                            mTvVersionState.setText("最新版本:"+ mUpdateVersionInfo.versionName);
+                            //弹出对话框,提示用户更新
+                            showVersionUpdateDialog(AppUtils.getVersionName(mContext),mUpdateVersionInfo.versionName,mUpdateVersionInfo.versionDes);
+
+                        }else{
+                            ToastUtil.show("当前是最新版本");
+                            mTvVersionState.setText("当前是最新版本");
+                        }
+
+                        checkDialog.dismiss();
+                    }
+                });
+
             }
         });
-    }
-
-    /**
-     * 解析json 数据
-     *
-     * Gson: Google Json<br>
-     * 要使用到gson-2.3.1.jar
-     *
-     * @param result			String类型（json文件的内容）
-     */
-    protected void processData(String result) {
-
-        // Gson: Google Json
-        Gson gson = new Gson();
-        Message msg = Message.obtain();
-        try {
-            // 將json解析到  参数2：Javabean类字节码
-            // ***返回一个 参数2的javabean类
-            mUpdateVersionInfo = gson.fromJson(result, UpdateVersionInfo.class);
-            LogUtils.i("json String:\n" + mUpdateVersionInfo.toString());
-
-            // 比对版本号(服务器版本号>本地版本号,提示用户更新)
-            if(mCurrentVersionCode < Integer.parseInt(mUpdateVersionInfo.versionCode)){
-                msg.what = UPDATE_VERSION;                                   // 提示用户更新,弹出对话框(UI),消息机制
-                msg.obj = mUpdateVersionInfo.versionName;
-            }else{
-                msg.what = LATEST_VERSION;                                  // 进入应用程序主界面
-            }
-            mHandler.sendMessage(msg);                                          // 发送消息
-        }catch (Exception e){
-            LogUtils.i("Gson Error:" + e.getMessage());
-        }
-
-    }
-
-    /**
-     * 下载apk <p>
-     * 使用了 xUtils
-     */
-    protected void downloadApk() {
-
-        //1,判断sd卡是否可用,是否挂在上
-        if(MemorySizeUtils.externalMemoryAvailable()) {
-
-            // 从网址中获取"文件名"
-            String url = mUpdateVersionInfo.downloadUrl;
-            String fileName = url.substring(url.lastIndexOf('/')+1);
-
-            //2,获取sd路径
-            final String path = Constant.APP_RESOURCE_PATH + fileName;
-
-            Request request = new Request.Builder().url(mUpdateVersionInfo.downloadUrl).build();
-            AccountBookApplication.getmOkHttpClient().newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    LogUtils.i("失败了:" + e.getMessage());
-                    ToastUtil.show("链接失败!");
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-//                    final InputStream is = response.body().byteStream();
-//                    new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            try {
-//                                File file = FilesUtils.InputStream2File(is, path);      // 将下载的文件的"流"弄成"File"
-//                                LogUtils.i("is2file 成功");
-//
-//                                installApk(file);                                       // 提示用户安装
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }).start();
-
-
-                    final Response myResponse = response;
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                File file = saveFile(myResponse, path);
-                                installApk(file);                                       // 提示用户安装
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
-                }
-            });
-        }
-    }
-
-
-    /**
-     * 保存文件
-     * @param response
-     * @param path
-     * @return
-     * @throws IOException
-     */
-    public File saveFile(Response response, String path) throws IOException {
-        InputStream is = null;
-        byte[] buf = new byte[2048];
-        int len = 0;
-        FileOutputStream fos = null;
-        try {
-            is = response.body().byteStream();                          // 拿到响应体的"流"
-            long total = response.body().contentLength();
-
-            long sum = 0;
-
-            File file = new File(path);                                 // 文件
-            fos = new FileOutputStream(file);
-
-            while ((len = is.read(buf)) != -1) {
-                sum += len;
-                fos.write(buf, 0, len);
-                final long finalSum = sum;
-                int intSum = Integer.valueOf(ToFormatUtil.toDecimalFormat((finalSum * 1.0f / total)*100, 0));
-                LogUtils.i("下载进度:" + ToFormatUtil.toDecimalFormat((finalSum * 1.0f / total)*100, 2) + "%");
-                String fileSizePercent = MemorySizeUtils.formatFileSize(sum,false) + "/" +
-                        MemorySizeUtils.formatFileSize(total,false);
-
-                Message msg = Message.obtain();
-                msg.what = PROGRESS_PERCENT;                                   // 提示用户更新,弹出对话框(UI),消息机制
-                Bundle bundle = new Bundle();
-                bundle.putInt("ProgressPercent",intSum);
-                bundle.putString("FileSizePercent",fileSizePercent);
-                msg.setData(bundle);
-                mHandler.sendMessage(msg);
-
-            }
-            fos.flush();
-
-            return file;
-
-        } finally {
-            try {
-                response.body().close();
-                if (is != null) is.close();
-            } catch (IOException e) {
-            }
-            try {
-                if (fos != null) fos.close();
-            } catch (IOException e) {
-            }
-            Message msg = Message.obtain();
-            msg.what = PROGRESS_GONE;                                   // 提示用户更新,弹出对话框(UI),消息机制
-            mHandler.sendMessage(msg);
-        }
-    }
-
-
-    /**
-     * 安装对应apk
-     * @param file	安装文件
-     */
-    protected void installApk(File file) {
-        //（安装apk的界面是）系统应用界面,源码,安装apk入口
-        // 使用"隐式意图"
-        Intent intent = new Intent("android.intent.action.VIEW");
-        intent.addCategory("android.intent.category.DEFAULT");
-        /**
-         * //文件作为数据源
-         * intent.setData(Uri.fromFile(file));
-         * //设置安装的类型
-         * intent.setType("application/vnd.android.package-archive");
-         */
-        intent.setDataAndType(Uri.fromFile(file),"application/vnd.android.package-archive");
-        // startActivity(intent);
-        startActivityForResult(intent, 0);
     }
 
     /**
@@ -527,7 +313,7 @@ public class OtherFragment extends BaseFragment {
                 // 添加"test用户"
 
                 ContentValues userValues = new ContentValues();
-                //   userValues.put("id", id);                    // 主键可以不写
+                userValues.put("_id", 123456789);
                 userValues.put("name", "test");                        // 字段  ： 值
                 userValues.put("password", "123456");
                 userValues.put("sex", 1);
@@ -710,7 +496,11 @@ public class OtherFragment extends BaseFragment {
                 break;
 
             case R.id.tv_check_version:
-                checkVersion();
+                try {
+                    checkVersion();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
 
             default:

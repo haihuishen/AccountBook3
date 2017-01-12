@@ -2,8 +2,10 @@ package com.shen.accountbook3.ui;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -14,9 +16,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shen.accountbook3.R;
+import com.shen.accountbook3.Utils.LogUtils;
+import com.shen.accountbook3.Utils.MyOkHttpUtils;
+import com.shen.accountbook3.Utils.ToastUtil;
 import com.shen.accountbook3.config.Constant;
 import com.shen.accountbook3.db.biz.TableEx;
+import com.shen.accountbook3.domain.RegisterResultJSONBean;
 import com.shen.accountbook3.global.AccountBookApplication;
+import com.shen.loadingdialog.View.SpotsDialog;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 
 /**
@@ -24,6 +39,7 @@ import com.shen.accountbook3.global.AccountBookApplication;
  */
 public class RegisterActivity extends Activity{
 
+    private Context mContext;
 
     private ImageButton mMeun;
     private ImageButton mBack;
@@ -34,12 +50,16 @@ public class RegisterActivity extends Activity{
     private RadioGroup mSex;
     private int Sex;
 
+    TableEx tableEx;
     private Button mRegister;
 
+    private Handler mHandler = AccountBookApplication.getHandler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        mContext = this;
 
         initView();
         initListend();
@@ -100,31 +120,98 @@ public class RegisterActivity extends Activity{
                         TextUtils.isEmpty(mPassword.getText().toString())) {
                     Toast.makeText(getBaseContext(), "用户和密码不能为空", Toast.LENGTH_SHORT).show();
                 } else {
-                    TableEx tableEx = new TableEx(AccountBookApplication.getContext());
+                    String name = mUsename.getText().toString();
+                    String password = mPassword.getText().toString();
+                    String sex = Sex + "";
+
+
+                    tableEx = new TableEx(AccountBookApplication.getContext());
                     Cursor cursor = tableEx.Query(Constant.TABLE_USER, new String[]{"name"}, "name=?",
-                                new String[]{mUsename.getText().toString()},null,null,null);
+                            new String[]{name}, null, null, null);
                     String c_name = "";
-                    if(cursor.getCount() != 0) {
+                    if (cursor.getCount() != 0) {
                         cursor.moveToFirst();
                         c_name = cursor.getString(0);
                     }
 
-                    if(!(c_name.equals(mUsename.getText().toString()))){
-                        try {
-                            ContentValues values = new ContentValues();
-                            values.put("name", mUsename.getText().toString());                        // 字段  ： 值
-                            values.put("password", mPassword.getText().toString());
-                            values.put("sex", Sex);
-                            tableEx.Add(Constant.TABLE_USER, values);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        finish();
-                    }else{
-                        Toast.makeText(getBaseContext(), "此用户已存在!", Toast.LENGTH_SHORT).show();
+                    if (!(c_name.equals(mUsename.getText().toString()))) {
+                        upDate(name, password, sex);
+                    } else{
+                        ToastUtil.show("此用户已存在!");
                     }
                 }
             }
         });
     }
+
+    /**
+     * 将注册信息上传到网站，根据回传的信息是否回传成功
+     */
+    private void upDate(final String name, final String password, final String sex){
+        final SpotsDialog checkDialog = new SpotsDialog(mContext,"正在上传图片");
+        checkDialog.show();
+
+
+        List<MyOkHttpUtils.Param> params = new ArrayList<MyOkHttpUtils.Param>();
+
+        params.add(new MyOkHttpUtils.Param("name", name));
+        params.add(new MyOkHttpUtils.Param("password", password));
+        params.add(new MyOkHttpUtils.Param("sex", sex));
+
+        MyOkHttpUtils.getInstence().requestPostAsyn(Constant.REGISTER_URL, params, new Callback(){
+
+            @Override
+            public void onFailure(Call call, final IOException e) {
+
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        checkDialog.dismiss();
+                        LogUtils.i("失败了:" + e.getMessage());
+                        ToastUtil.show("注册失败");
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                RegisterResultJSONBean jsonBean = (RegisterResultJSONBean) MyOkHttpUtils.fromJson(response, RegisterResultJSONBean.class);
+
+                LogUtils.i("jsonBean:\n" + jsonBean.toString());
+
+                if(jsonBean.getResult().equals("success") && jsonBean.getId() != 0) {
+
+                    try {
+                        ContentValues values = new ContentValues();
+                        values.put("_id", jsonBean.getId());
+                        values.put("name", name);                        // 字段  ： 值
+                        values.put("password", password);
+                        values.put("sex", sex);
+                        tableEx.Add(Constant.TABLE_USER, values);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            checkDialog.dismiss();
+                            finish();
+                            ToastUtil.show("用户:" + name + "——注册成功");
+                        }
+                    });
+
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            checkDialog.dismiss();
+                            ToastUtil.show("注册失败!");
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
 }

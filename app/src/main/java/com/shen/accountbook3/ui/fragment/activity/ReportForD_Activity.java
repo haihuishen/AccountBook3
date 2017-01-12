@@ -36,6 +36,7 @@ import com.shen.accountbook3.Utils.ToastUtil;
 import com.shen.accountbook3.config.Constant;
 import com.shen.accountbook3.db.biz.TableEx;
 import com.shen.accountbook3.global.AccountBookApplication;
+import com.shen.accountbook3.ui.view.DeleteDialog;
 import com.shen.accountbook3.ui.view.MyMenuRecyclerView.AccounBookProvider;
 import com.shen.accountbook3.ui.view.MyMenuRecyclerView.RecyclerViewCursorAdapter;
 import com.shen.accountbook3.ui.view.MyMenuRecyclerView.SlidingButtonView;
@@ -102,6 +103,9 @@ public class ReportForD_Activity extends Activity implements OnClickListener, Lo
     private Cursor mAllCursor = null;
 
     private Handler handler = AccountBookApplication.getHandler();
+
+
+    private DeleteDialog mDeleteDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,20 +242,37 @@ public class ReportForD_Activity extends Activity implements OnClickListener, Lo
             }
 
             @Override
-            public void onDeleteBtnCilck(View view, int position,String id, String image) {
-                LogUtils.i("删除项："+position);
-                LogUtils.i("删除项___________________id："+id);
+            public void onDeleteBtnCilck(View view, final int position, final String id, final String image) {
 
-                int i = getContentResolver().delete(AccounBookProvider.URI_ACCOUNTBOOK3_ALL,"_id=? and user=?",
-                        new String[]{id, AccountBookApplication.getUserInfo().getUserName()});
-                // 删除对应的图片!
-                if(i > 0 && !TextUtils.isEmpty(image)){
-                    File f = new File(Constant.IMAGE_PATH+AccountBookApplication.getUserInfo().getUserName(), image);
-                    if(f.exists())
-                        f.delete();
-                }
+                mDeleteDialog = new DeleteDialog(mContext) {  // 注意这个上下文，用父的，还是自己的，全局的
+                    @Override
+                    public void confirm() {
 
-                LogUtils.i("删除项___________________i："+i);
+                        LogUtils.i("删除项："+position);
+                        LogUtils.i("删除项___________________id："+id);
+
+                        int i = getContentResolver().delete(AccounBookProvider.URI_ACCOUNTBOOK3_ALL,"_id=? and user=?",
+                                new String[]{id, AccountBookApplication.getUserInfo().getUserName()});
+                        // 删除对应的图片!
+                        if(i > 0 && !TextUtils.isEmpty(image)){
+                            File f = new File(Constant.IMAGE_PATH+AccountBookApplication.getUserInfo().getUserName(), image);
+                            if(f.exists())
+                                f.delete();
+                        }
+
+                        LogUtils.i("删除项___________________i："+i);
+
+
+                        mDeleteDialog.dismiss();
+                    }
+                    @Override
+                    public void cancel() {
+                        mDeleteDialog.dismiss();
+                    }
+                };
+
+                mDeleteDialog.setTitle("是否\"删除\"");
+                mDeleteDialog.show();
             }
 
             @Override
@@ -486,6 +507,13 @@ public class ReportForD_Activity extends Activity implements OnClickListener, Lo
                     }
                 });
                 return true;
+            }
+
+            if(mDeleteDialog != null){
+                if(mDeleteDialog.isShowing()) {
+                    mDeleteDialog.dismiss();
+                    return true;
+                }
             }
 
         }

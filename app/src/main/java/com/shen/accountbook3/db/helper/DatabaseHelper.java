@@ -47,7 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		System.out.println("DBHelper onCreate");
-        db.execSQL("create table if not exists user(_id integer primary key autoincrement," +
+        db.execSQL("create table if not exists user(_id bigint primary key not null," +
                 "name varchar(20) not null,password varchar(20) not null," +
                 "sex tinyint(1),image varchar(50),birthday date,qq varchar(20))");
         db.execSQL("create table if not exists consumption(_id integer primary key autoincrement," +
