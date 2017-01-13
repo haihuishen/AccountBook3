@@ -330,7 +330,7 @@ public class AddActivity extends Activity implements View.OnClickListener{
         // 根据当前的时间，组合成"照片名称"
         SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmssSSS");
         String currentTime = sDateFormat.format(new java.util.Date());
-        String imageName = AccountBookApplication.getUserInfo().getUserName() +"_"+ currentTime+".jpg";
+        String imageName = currentTime+".jpg";
 
         // 根据全局变量，添加时是否将图片添加到数据库(这个只是"图片名")
         // true:压缩图片保存在指定位置
@@ -338,7 +338,7 @@ public class AddActivity extends Activity implements View.OnClickListener{
         if(saveImage) {
             try {
                 ImageFactory.ratioAndGenThumb(Constant.CACHE_IMAGE_PATH + "CacheImage.jpg",
-                        Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getUserName() + File.separator + imageName,
+                        Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getId() + File.separator + imageName,
                         300, 300, false);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -398,15 +398,15 @@ public class AddActivity extends Activity implements View.OnClickListener{
 
         ContentValues values = new ContentValues();
         //   values.put("_id", id);                   // 主键可以不写
-        values.put("user", AccountBookApplication.getUserInfo().getUserName());
-        values.put("maintype", maintype);                        // 字段  ： 值
-        values.put("type1", type1);
-        values.put("concreteness", concreteness);
-        values.put("price", ToFormatUtil.toDecimalFormat(price, 2));
-        values.put("number", number);
-        values.put("unitPrice", ToFormatUtil.toDecimalFormat(unitPrice, 2));
-        values.put("image", imageName);
-        values.put("date", date);   // 这里只要填写 YYYY-MM-DD  ，不用填date(2016-09-12 00:00:00) 这么麻烦
+        values.put(Constant.TABLE_CONSUMPTION_userid_STRING, AccountBookApplication.getUserInfo().getId()+"");
+        values.put(Constant.TABLE_CONSUMPTION_maintype_STRING, maintype);                        // 字段  ： 值
+        values.put(Constant.TABLE_CONSUMPTION_type1_STRING, type1);
+        values.put(Constant.TABLE_CONSUMPTION_concreteness_STRING, concreteness);
+        values.put(Constant.TABLE_CONSUMPTION_price_STRING, ToFormatUtil.toDecimalFormat(price, 2));
+        values.put(Constant.TABLE_CONSUMPTION_number_STRING, number);
+        values.put(Constant.TABLE_CONSUMPTION_unitprice_STRING, ToFormatUtil.toDecimalFormat(unitPrice, 2));
+        values.put(Constant.TABLE_CONSUMPTION_image_STRING, imageName);
+        values.put(Constant.TABLE_CONSUMPTION_date_STRING, date);   // 这里只要填写 YYYY-MM-DD  ，不用填date(2016-09-12 00:00:00) 这么麻烦
 
         long num = consumptionEx.Add(Constant.TABLE_CONSUMPTION, values);
         if(num != -1)

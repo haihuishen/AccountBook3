@@ -405,9 +405,9 @@ public class ReportForY_LineChar_Activity extends FragmentActivity implements Vi
 
             numberOfPoints[i] = 12 + 1;                     // 因为从0开始的，但是这里从 1开始，所以要多加一个点
             cursor = tableEx.Query(Constant.TABLE_CONSUMPTION,
-                    new String[]{"sum(price),strftime('%Y-%m',date)"}, "date like ? and user=?",
+                    new String[]{"sum(price),strftime('%Y-%m',date)"}, "date like ? and userid=?",
                     new String[]{yearList.get(i) + "%",
-                            AccountBookApplication.getUserInfo().getUserName()}, "strftime('%Y-%m',date)", null, null);
+                            AccountBookApplication.getUserInfo().getId()+""}, "strftime('%Y-%m',date)", null, null);
 
             int num = cursor.getCount();
             try {

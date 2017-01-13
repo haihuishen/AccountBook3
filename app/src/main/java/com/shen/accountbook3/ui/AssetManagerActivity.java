@@ -92,7 +92,7 @@ public class AssetManagerActivity extends Activity implements View.OnClickListen
         // cast(sum(asset) as TEXT)--> 这样就不会变成"科学计数法"
         // sum(asset) -->asset 就算是 varchar(20),不是decimal(18,2)，使用sum(asset)后还是"会使用科学计数法"
         cursorTotalAssets = tableEx.Query(Constant.TABLE_ASSETS, new String[]{"cast(sum(asset) as TEXT)"},
-                "user=?", new String[]{AccountBookApplication.getUserInfo().getUserName()},
+                "userid=?", new String[]{AccountBookApplication.getUserInfo().getId()+""},
                 null, null, null);
         try {
             if (cursorTotalAssets.getCount() != 0) {        // 查询：带"函数"字段，就算"没记录"，返回的也是"1"
@@ -119,7 +119,7 @@ public class AssetManagerActivity extends Activity implements View.OnClickListen
 
 
         cursor = tableEx.Query(Constant.TABLE_ASSETS, null,
-                "user=?", new String[]{AccountBookApplication.getUserInfo().getUserName()},
+                "userid=?", new String[]{AccountBookApplication.getUserInfo().getId()+""},
                 null, null, "type,changetime,asset DESC");
 
         adapter = new MyCursorAdapter(this, cursor);
@@ -242,13 +242,13 @@ public class AssetManagerActivity extends Activity implements View.OnClickListen
                     int num = 0;
                     if(assetType.equals(Constant.ME)) {
                         num = tableEx.Delete(Constant.TABLE_ASSETS,
-                                "user=? and type=? and changetime=? and asset=?",
-                                new String[]{AccountBookApplication.getUserInfo().getUserName(),
+                                "userid=? and type=? and changetime=? and asset=?",
+                                new String[]{AccountBookApplication.getUserInfo().getId()+"",
                                         assetType, changeTime, asset});
                     }else{
                         num = tableEx.Delete(Constant.TABLE_ASSETS,
-                                "user=? and type=? and changetime=? and what=? and asset=?",
-                                new String[]{AccountBookApplication.getUserInfo().getUserName(),
+                                "userid=? and type=? and changetime=? and what=? and asset=?",
+                                new String[]{AccountBookApplication.getUserInfo().getId()+"",
                                         assetType, changeTime, what, asset});
                     }
                     if(num != 0){
@@ -284,7 +284,7 @@ public class AssetManagerActivity extends Activity implements View.OnClickListen
         // cast(sum(asset) as TEXT)--> 这样就不会变成"科学计数法"
         // sum(asset) -->asset 就算是 varchar(20),不是decimal(18,2)，使用sum(asset)后还是"会使用科学计数法"
         cursorTotalAssets = tableEx.Query(Constant.TABLE_ASSETS, new String[]{"cast(sum(asset) as TEXT)"},
-                "user=?", new String[]{AccountBookApplication.getUserInfo().getUserName()},
+                "userid=?", new String[]{AccountBookApplication.getUserInfo().getId()+""},
                 null, null, null);
         try {
             if (cursorTotalAssets.getCount() != 0) {        // 查询：带"函数"字段，就算"没记录"，返回的也是"1"
@@ -310,7 +310,7 @@ public class AssetManagerActivity extends Activity implements View.OnClickListen
         }
 
         cursor = tableEx.Query(Constant.TABLE_ASSETS, null,
-                "user=?", new String[]{AccountBookApplication.getUserInfo().getUserName()},
+                "userid=?", new String[]{AccountBookApplication.getUserInfo().getId()+""},
                 null, null, "type,changetime,asset DESC");
 
         adapter = new MyCursorAdapter(mContext, cursor);
@@ -387,13 +387,13 @@ public class AssetManagerActivity extends Activity implements View.OnClickListen
 
         if(assetType.equals(Constant.ME)) {
             c = tableEx.Query(Constant.TABLE_ASSETS,new String[]{"_id"},
-                    "user=? and type=? and changetime=? and asset=?",
-                    new String[]{AccountBookApplication.getUserInfo().getUserName(),
+                    "userid=? and type=? and changetime=? and asset=?",
+                    new String[]{AccountBookApplication.getUserInfo().getId()+"",
                             assetType, changeTime, asset},null,null,null);
         }else{
             c = tableEx.Query(Constant.TABLE_ASSETS,new String[]{"_id"},
-                    "user=? and type=? and changetime=? and what=? and asset=?",
-                    new String[]{AccountBookApplication.getUserInfo().getUserName(),
+                    "userid=? and type=? and changetime=? and what=? and asset=?",
+                    new String[]{AccountBookApplication.getUserInfo().getId()+"",
                             assetType, changeTime, what, asset},null,null,null);
         }
         try {

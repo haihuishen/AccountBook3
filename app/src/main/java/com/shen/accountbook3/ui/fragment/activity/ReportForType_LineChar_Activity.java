@@ -595,20 +595,20 @@ public class ReportForType_LineChar_Activity extends FragmentActivity implements
             NumbersTab = new float[1][numberOfPoints[0]];
 
             if(types.length == 1){                                        // 主类型
-                ToastUtil.show("types.length == 1");
+                //ToastUtil.show("types.length == 1");
                 cursor = tableEx.Query(Constant.TABLE_CONSUMPTION,
-                        new String[]{"sum(price),strftime('%Y-%m',date)"}, "date like ? and user=? and maintype=?",
-                        new String[]{date + "%", AccountBookApplication.getUserInfo().getUserName(), type},
+                        new String[]{"sum(price),strftime('%Y-%m',date)"}, "date like ? and userid=? and maintype=?",
+                        new String[]{date + "%", AccountBookApplication.getUserInfo().getId()+"", type},
                         "strftime('%Y-%m',date)", null, null);
 
             }else if(types.length == 2) {                                 // 次类型
                 cursor = tableEx.Query(Constant.TABLE_CONSUMPTION,
-                        new String[]{"sum(price),strftime('%Y-%m',date)"}, "date like ? and user=? and maintype=? and type1=?",
-                        new String[]{date + "%", AccountBookApplication.getUserInfo().getUserName(), types[0], types[1]},
+                        new String[]{"sum(price),strftime('%Y-%m',date)"}, "date like ? and userid=? and maintype=? and type1=?",
+                        new String[]{date + "%", AccountBookApplication.getUserInfo().getId()+"", types[0], types[1]},
                         "strftime('%Y-%m',date)", null, null);
             }
         }else if(dates.length == 2) {                         // 年月
-            ToastUtil.show("dates.length == 2");
+            //ToastUtil.show("dates.length == 2");
             try {
                 calendar.setTime(new SimpleDateFormat("yyyy-MM").parse(date));
             } catch (ParseException e) {
@@ -620,14 +620,14 @@ public class ReportForType_LineChar_Activity extends FragmentActivity implements
 
             if(types.length == 1){                                        // 主类型
                 cursor = tableEx.Query(Constant.TABLE_CONSUMPTION,
-                        new String[]{"sum(price),date"}, "date like ? and user=? and maintype=?",
-                        new String[]{date + "%", AccountBookApplication.getUserInfo().getUserName(), type},
+                        new String[]{"sum(price),date"}, "date like ? and userid=? and maintype=?",
+                        new String[]{date + "%", AccountBookApplication.getUserInfo().getId()+"", type},
                         "date", null, null);
 
             }else if(types.length == 2) {                                 // 次类型
                 cursor = tableEx.Query(Constant.TABLE_CONSUMPTION,
-                        new String[]{"sum(price),date"}, "date like ? and user=? and maintype=? and type1=?",
-                        new String[]{date + "%", AccountBookApplication.getUserInfo().getUserName(), types[0], types[1]},
+                        new String[]{"sum(price),date"}, "date like ? and userid=? and maintype=? and type1=?",
+                        new String[]{date + "%", AccountBookApplication.getUserInfo().getId()+"", types[0], types[1]},
                         "date", null, null);
             }
         }

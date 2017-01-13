@@ -410,9 +410,9 @@ public class ReportForM_LineChar_Activity extends FragmentActivity implements Vi
             int dayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
             numberOfPoints[i] = dayOfMonth + 1;                     // 因为从0开始的，但是这里从 1开始，所以要多加一个点
             cursor = tableEx.Query(Constant.TABLE_CONSUMPTION,
-                    new String[]{"sum(price),date"}, "date like ? and user=?",
+                    new String[]{"sum(price),date"}, "date like ? and userid=?",
                     new String[]{monthList.get(i) + "%",
-                            AccountBookApplication.getUserInfo().getUserName()}, "date", null, null);
+                            AccountBookApplication.getUserInfo().getId()+""}, "date", null, null);
             System.out.println("dayOfMonth数量：" + dayOfMonth);
             int num = cursor.getCount();
             try {

@@ -51,11 +51,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "name varchar(20) not null,password varchar(20) not null," +
                 "sex tinyint(1),image varchar(50),birthday date,qq varchar(20))");
         db.execSQL("create table if not exists consumption(_id integer primary key autoincrement," +
-                "user varchar(20) not null,"+
+                "userid bigint not null,"+
                 "maintype varchar(20) not null,type1 varchar(20),concreteness varchar(30)," +
                 "price decimal(18,2),number integer,unitprice decimal(18,2),image varchar(50),date date not null)");
         db.execSQL("create table if not exists assets(_id integer primary key autoincrement," +
-                "user varchar(20) not null,"+
+                "userid bigint not null,"+
                 "type varchar(20) not null,changetime date not null," +
                 "what varchar(30),cardnum varchar(4),asset varchar(20) not null)");
     }

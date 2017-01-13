@@ -233,16 +233,16 @@ public class ChangeAssetActivity extends Activity implements View.OnClickListene
         tableEx = new TableEx(AccountBookApplication.getContext());
 
         cursor = tableEx.Query(Constant.TABLE_ASSETS, null,
-                "user=? and _id=?", new String[]{AccountBookApplication.getUserInfo().getUserName(), id+""},
+                "userid=? and _id=?", new String[]{AccountBookApplication.getUserInfo().getId()+"", id+""},
                 null, null, null);
         try {
             if (cursor.getCount() != 0) {        // 查询：带"函数"字段，就算"没记录"，返回的也是"1"
                 cursor.moveToFirst();
 
-                changeTime = cursor.getString(3);
-                what = cursor.getString(4);
-                bankNum = cursor.getString(5);
-                asset = cursor.getString(6);
+                changeTime = cursor.getString(Constant.TABLE_ASSETS_changetime);
+                what = cursor.getString(Constant.TABLE_ASSETS_what);
+                bankNum = cursor.getString(Constant.TABLE_ASSETS_cardnum);
+                asset = cursor.getString(Constant.TABLE_ASSETS_asset);
             }else{
                 ToastUtil.show("获取参数异常");
                 return;
@@ -389,14 +389,14 @@ public class ChangeAssetActivity extends Activity implements View.OnClickListene
 
         ContentValues values = new ContentValues();
         //   values.put("_id", id);                   // 主键可以不写
-        values.put("user", AccountBookApplication.getUserInfo().getUserName());
+        values.put(Constant.TABLE_ASSETS_userid_STRING, AccountBookApplication.getUserInfo().getId()+"");
 
         if (assetType.equals(Constant.CREDIT)) {                                          // 信用卡
-            values.put("type", assetType);                                             // 什么布局
-            values.put("changetime", tvCreditChangeTime.getText().toString()); // 修改金额时间
-            values.put("what", etCreditWhat.getText().toString());              // 什么银行的信用卡
-            values.put("cardnum", etCreditCardNum.getText().toString());        // 银行卡后面4位
-            values.put("asset", etCreditAsset.getText().toString());            // 资源
+            values.put(Constant.TABLE_ASSETS_type_STRING, assetType);                                             // 什么布局
+            values.put(Constant.TABLE_ASSETS_changetime_STRING, tvCreditChangeTime.getText().toString()); // 修改金额时间
+            values.put(Constant.TABLE_ASSETS_what_STRING, etCreditWhat.getText().toString());              // 什么银行的信用卡
+            values.put(Constant.TABLE_ASSETS_cardnum_STRING, etCreditCardNum.getText().toString());        // 银行卡后面4位
+            values.put(Constant.TABLE_ASSETS_asset_STRING, etCreditAsset.getText().toString());            // 资源
 
             if(etCreditCardNum.getText().toString().length() != 4){
                 ToastUtil.show("请输入银行卡后4位");
@@ -413,11 +413,11 @@ public class ChangeAssetActivity extends Activity implements View.OnClickListene
                 return;
             }
         } else if (assetType.equals(Constant.DEPOSIT)) {                                   // 储蓄卡
-            values.put("type", assetType);                                             // 什么布局
-            values.put("changetime", tvDepositChangeTime.getText().toString()); // 修改金额时间
-            values.put("what", etDepositWhat.getText().toString());              // 什么银行的储蓄卡
-            values.put("cardnum", etDepositCardNum.getText().toString());        // 银行卡后面4位
-            values.put("asset", etDepositAsset.getText().toString());            // 资源
+            values.put(Constant.TABLE_ASSETS_type_STRING, assetType);                                             // 什么布局
+            values.put(Constant.TABLE_ASSETS_changetime_STRING, tvDepositChangeTime.getText().toString()); // 修改金额时间
+            values.put(Constant.TABLE_ASSETS_what_STRING, etDepositWhat.getText().toString());              // 什么银行的储蓄卡
+            values.put(Constant.TABLE_ASSETS_cardnum_STRING, etDepositCardNum.getText().toString());        // 银行卡后面4位
+            values.put(Constant.TABLE_ASSETS_asset_STRING, etDepositAsset.getText().toString());            // 资源
 
 
             if(etDepositCardNum.getText().toString().length() != 4){
@@ -435,10 +435,10 @@ public class ChangeAssetActivity extends Activity implements View.OnClickListene
                 return;
             }
         } else if (assetType.equals(Constant.COMPANY)) {                                   // 借贷公司
-            values.put("type", assetType);                                             // 什么布局
-            values.put("changetime", tvCompanyChangeTime.getText().toString()); // 修改金额时间
-            values.put("what", etCompanyWhat.getText().toString());              // 什么借贷公司
-            values.put("asset", etCompanyAsset.getText().toString());            // 资源
+            values.put(Constant.TABLE_ASSETS_type_STRING, assetType);                                             // 什么布局
+            values.put(Constant.TABLE_ASSETS_changetime_STRING, tvCompanyChangeTime.getText().toString()); // 修改金额时间
+            values.put(Constant.TABLE_ASSETS_what_STRING, etCompanyWhat.getText().toString());              // 什么借贷公司
+            values.put(Constant.TABLE_ASSETS_asset_STRING, etCompanyAsset.getText().toString());            // 资源
 
             if(!TextUtils.isEmpty(etCompanyAsset.getText().toString())){
                 if(Float.valueOf(etCompanyAsset.getText().toString()) > 0){
@@ -450,10 +450,10 @@ public class ChangeAssetActivity extends Activity implements View.OnClickListene
                 return;
             }
         } else if (assetType.equals(Constant.ECPSS)) {                                     // 第三方支付
-            values.put("type", assetType);                                             // 什么布局
-            values.put("changetime", tvEcpssChangeTime.getText().toString()); // 修改金额时间
-            values.put("what", etEcpssWhat.getText().toString());              // 什么第三方支付
-            values.put("asset", etEcpssAsset.getText().toString());            // 资源
+            values.put(Constant.TABLE_ASSETS_type_STRING, assetType);                                             // 什么布局
+            values.put(Constant.TABLE_ASSETS_changetime_STRING, tvEcpssChangeTime.getText().toString()); // 修改金额时间
+            values.put(Constant.TABLE_ASSETS_what_STRING, etEcpssWhat.getText().toString());              // 什么第三方支付
+            values.put(Constant.TABLE_ASSETS_asset_STRING, etEcpssAsset.getText().toString());            // 资源
 
             if(!TextUtils.isEmpty(etEcpssAsset.getText().toString())){
                 if(Float.valueOf(etEcpssAsset.getText().toString()) < 0){
@@ -465,10 +465,10 @@ public class ChangeAssetActivity extends Activity implements View.OnClickListene
                 return;
             }
         } else if (assetType.equals(Constant.OWEOTHER)) {                                     // 欠别人钱
-            values.put("type", assetType);                                             // 什么布局
-            values.put("changetime", tvOweOtherChangeTime.getText().toString()); // 修改金额时间
-            values.put("what", etOweOtherWhat.getText().toString());              // 欠什么人钱
-            values.put("asset", etOweOtherAsset.getText().toString());            // 资源
+            values.put(Constant.TABLE_ASSETS_type_STRING, assetType);                                             // 什么布局
+            values.put(Constant.TABLE_ASSETS_changetime_STRING, tvOweOtherChangeTime.getText().toString()); // 修改金额时间
+            values.put(Constant.TABLE_ASSETS_what_STRING, etOweOtherWhat.getText().toString());              // 欠什么人钱
+            values.put(Constant.TABLE_ASSETS_asset_STRING, etOweOtherAsset.getText().toString());            // 资源
 
             if(!TextUtils.isEmpty(etOweOtherAsset.getText().toString())){
                 if(Float.valueOf(etOweOtherAsset.getText().toString()) > 0){
@@ -480,10 +480,10 @@ public class ChangeAssetActivity extends Activity implements View.OnClickListene
                 return;
             }
         } else if (assetType.equals(Constant.OWEME)) {                                     // 我是债主
-            values.put("type", assetType);                                             // 什么布局
-            values.put("changetime", tvOweMeChangeTime.getText().toString()); // 修改金额时间
-            values.put("what", etOweMeWhat.getText().toString());              // 什么人欠我钱
-            values.put("asset", etOweMeAsset.getText().toString());            // 资源
+            values.put(Constant.TABLE_ASSETS_type_STRING, assetType);                                             // 什么布局
+            values.put(Constant.TABLE_ASSETS_changetime_STRING, tvOweMeChangeTime.getText().toString()); // 修改金额时间
+            values.put(Constant.TABLE_ASSETS_what_STRING, etOweMeWhat.getText().toString());              // 什么人欠我钱
+            values.put(Constant.TABLE_ASSETS_asset_STRING, etOweMeAsset.getText().toString());            // 资源
 
             if(!TextUtils.isEmpty(etOweMeAsset.getText().toString())){
                 if(Float.valueOf(etOweMeAsset.getText().toString()) < 0){
@@ -495,9 +495,9 @@ public class ChangeAssetActivity extends Activity implements View.OnClickListene
                 return;
             }
         } else if (assetType.equals(Constant.ME)) {                                     // 个人现金
-            values.put("type", assetType);                                             // 什么布局
-            values.put("changetime", tvMeChangeTime.getText().toString());              // 修改金额时间
-            values.put("asset", etMeAsset.getText().toString());            // 资源
+            values.put(Constant.TABLE_ASSETS_type_STRING, assetType);                                             // 什么布局
+            values.put(Constant.TABLE_ASSETS_changetime_STRING, tvMeChangeTime.getText().toString());              // 修改金额时间
+            values.put(Constant.TABLE_ASSETS_asset_STRING, etMeAsset.getText().toString());            // 资源
 
             if(!TextUtils.isEmpty(etMeAsset.getText().toString())){
                 if(Float.valueOf(etMeAsset.getText().toString()) < 0){

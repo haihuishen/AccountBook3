@@ -231,8 +231,8 @@ public class ReportForD_Activity extends Activity implements OnClickListener, Lo
     }
 
     private void setAdapter(){
-        mCursor = getContentResolver().query(AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date=? and user=?",
-                new String[]{mTvDate.getText().toString(), AccountBookApplication.getUserInfo().getUserName()}, null);
+        mCursor = getContentResolver().query(AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date=? and userid=?",
+                new String[]{mTvDate.getText().toString(), AccountBookApplication.getUserInfo().getId()+""}, null);
 
 
         MyRecyclerViewCursorAdapter.IonSlidingViewClickListener ionSlidingViewClickListener = new MyRecyclerViewCursorAdapter.IonSlidingViewClickListener() {
@@ -251,11 +251,11 @@ public class ReportForD_Activity extends Activity implements OnClickListener, Lo
                         LogUtils.i("删除项："+position);
                         LogUtils.i("删除项___________________id："+id);
 
-                        int i = getContentResolver().delete(AccounBookProvider.URI_ACCOUNTBOOK3_ALL,"_id=? and user=?",
-                                new String[]{id, AccountBookApplication.getUserInfo().getUserName()});
+                        int i = getContentResolver().delete(AccounBookProvider.URI_ACCOUNTBOOK3_ALL,"_id=? and userid=?",
+                                new String[]{id, AccountBookApplication.getUserInfo().getId()+""});
                         // 删除对应的图片!
                         if(i > 0 && !TextUtils.isEmpty(image)){
-                            File f = new File(Constant.IMAGE_PATH+AccountBookApplication.getUserInfo().getUserName(), image);
+                            File f = new File(Constant.IMAGE_PATH+AccountBookApplication.getUserInfo().getId()+"", image);
                             if(f.exists())
                                 f.delete();
                         }
@@ -279,7 +279,7 @@ public class ReportForD_Activity extends Activity implements OnClickListener, Lo
             public void onUpdateBtnCilck(HashMap hashMapItem, int position) {
                 LogUtils.i("更新项position："+position);
                 LogUtils.i("更新项___________________id："+ hashMapItem.get(Constant.TABLE_CONSUMPTION__id_STRING));
-                LogUtils.i("更新项___________________user："+ hashMapItem.get(Constant.TABLE_CONSUMPTION_user_STRING));
+                LogUtils.i("更新项___________________userid："+ hashMapItem.get(Constant.TABLE_CONSUMPTION_userid_STRING));
                 LogUtils.i("更新项___________________mainType："+ hashMapItem.get(Constant.TABLE_CONSUMPTION_maintype_STRING));
                 LogUtils.i("更新项___________________type1："+ hashMapItem.get(Constant.TABLE_CONSUMPTION_type1_STRING));
                 LogUtils.i("更新项___________________concreteness："+ hashMapItem.get(Constant.TABLE_CONSUMPTION_concreteness_STRING));
@@ -293,7 +293,7 @@ public class ReportForD_Activity extends Activity implements OnClickListener, Lo
                 Bundle bundle = new Bundle();
 
                 bundle.putString(Constant.TABLE_CONSUMPTION__id_STRING, hashMapItem.get(Constant.TABLE_CONSUMPTION__id_STRING).toString());
-                bundle.putString(Constant.TABLE_CONSUMPTION_user_STRING, hashMapItem.get(Constant.TABLE_CONSUMPTION_user_STRING).toString());
+                bundle.putString(Constant.TABLE_CONSUMPTION_userid_STRING, hashMapItem.get(Constant.TABLE_CONSUMPTION_userid_STRING).toString());
                 bundle.putString(Constant.TABLE_CONSUMPTION_maintype_STRING, hashMapItem.get(Constant.TABLE_CONSUMPTION_maintype_STRING).toString());
                 bundle.putString(Constant.TABLE_CONSUMPTION_type1_STRING, hashMapItem.get(Constant.TABLE_CONSUMPTION_type1_STRING).toString());
                 bundle.putString(Constant.TABLE_CONSUMPTION_concreteness_STRING, hashMapItem.get(Constant.TABLE_CONSUMPTION_concreteness_STRING).toString());
@@ -338,7 +338,7 @@ public class ReportForD_Activity extends Activity implements OnClickListener, Lo
         // cast(sum(asset) as TEXT)--> 这样就不会变成"科学计数法"
         // sum(asset) -->asset 就算是 varchar(20),不是decimal(18,2)，使用sum(asset)后还是"会使用科学计数法"
         mAllCursor = mTableEx.Query(Constant.TABLE_CONSUMPTION, new String[]{"cast(sum(price) as TEXT)"},
-                "date=? and user=?", new String[]{mTvDate.getText().toString(), AccountBookApplication.getUserInfo().getUserName()},
+                "date=? and userid=?", new String[]{mTvDate.getText().toString(), AccountBookApplication.getUserInfo().getId()+""},
                 null, null, null);
         try {
             if (mAllCursor.getCount() != 0) {        // 查询：带"函数"字段，就算"没记录"，返回的也是"1"
@@ -448,8 +448,8 @@ public class ReportForD_Activity extends Activity implements OnClickListener, Lo
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         LogUtils.i("调用___________________Loader");
-        CursorLoader loader = new CursorLoader(ReportForD_Activity.this, AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date=? and user=?",
-                new String[]{mTvDate.getText().toString(), AccountBookApplication.getUserInfo().getUserName()}, null);
+        CursorLoader loader = new CursorLoader(ReportForD_Activity.this, AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date=? and userid=?",
+                new String[]{mTvDate.getText().toString(), AccountBookApplication.getUserInfo().getId()+""}, null);
 
         return loader;
     }
@@ -578,7 +578,7 @@ public class ReportForD_Activity extends Activity implements OnClickListener, Lo
         public void onBindViewHolder(final MyViewHolder holder, Cursor cursor) {
 
             final String _id = cursor.getString(Constant.TABLE_CONSUMPTION__id);
-            String user = cursor.getString(Constant.TABLE_CONSUMPTION_user);
+            String userid = cursor.getString(Constant.TABLE_CONSUMPTION_userid);
             String mainType = cursor.getString(Constant.TABLE_CONSUMPTION_maintype);
             String type1 = cursor.getString(Constant.TABLE_CONSUMPTION_type1);
             String concreteness = cursor.getString(Constant.TABLE_CONSUMPTION_concreteness);
@@ -590,7 +590,7 @@ public class ReportForD_Activity extends Activity implements OnClickListener, Lo
 
             final HashMap<String,String> hashMapItem = new HashMap<String,String>();
             hashMapItem.put(Constant.TABLE_CONSUMPTION__id_STRING, _id);
-            hashMapItem.put(Constant.TABLE_CONSUMPTION_user_STRING, user);
+            hashMapItem.put(Constant.TABLE_CONSUMPTION_userid_STRING, userid);
             hashMapItem.put(Constant.TABLE_CONSUMPTION_maintype_STRING, mainType);
             hashMapItem.put(Constant.TABLE_CONSUMPTION_type1_STRING, type1);
             hashMapItem.put(Constant.TABLE_CONSUMPTION_concreteness_STRING, concreteness);
@@ -617,8 +617,8 @@ public class ReportForD_Activity extends Activity implements OnClickListener, Lo
             //            System.out.println("这张图片："+ Constant.IMAGE_PATH+"/"+imageName);
             final Bitmap bitmap;
             if(!TextUtils.isEmpty(image)) {
-                if (new File(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getUserName(), image).exists())     // 有这个文件，才生成位图
-                    bitmap = ImageFactory.getBitmap(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getUserName() + File.separator + image);
+                if (new File(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getId()+"", image).exists())     // 有这个文件，才生成位图
+                    bitmap = ImageFactory.getBitmap(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getId() + File.separator + image);
                 else
                     bitmap = ImageFactory.getBitmap(Constant.CACHE_IMAGE_PATH + "no_preview_picture.png");
             }else{

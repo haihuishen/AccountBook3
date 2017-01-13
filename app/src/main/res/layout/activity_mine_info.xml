@@ -82,7 +82,7 @@
                 android:text="用户名:"
                 android:textColor="@color/black"/>
             <TextView
-                android:id="@+id/tv_user"
+                android:id="@+id/tv_userid"
                 android:layout_toLeftOf="@+id/ib_user_change"
                 android:layout_centerVertical="true"
                 android:layout_width="wrap_content"

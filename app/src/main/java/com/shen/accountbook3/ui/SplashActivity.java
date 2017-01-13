@@ -80,8 +80,8 @@ public class SplashActivity extends Activity implements Thread.UncaughtException
         initSrc(Constant.CACHE_IMAGE_PATH,"cat_head.png");
         initSrc(Constant.CACHE_IMAGE_PATH,"test.png");
         initSrc(Constant.CACHE_IMAGE_PATH,"no_preview_picture.png");
-        initSrc(Constant.IMAGE_PATH + "test","test.png");
-        initSrc(Constant.IMAGE_PATH + "test","no_preview_picture.png");
+        initSrc(Constant.IMAGE_PATH + "123456789","test.png");
+        initSrc(Constant.IMAGE_PATH + "123456789","no_preview_picture.png");
 
         initView();
         initListener();
@@ -366,7 +366,7 @@ public class SplashActivity extends Activity implements Thread.UncaughtException
 
                     AccountBookApplication.setUserInfo(userInfo);
 
-                    File files = FilesUtils.createFile(Constant.IMAGE_PATH + c_name);     // 创建"用户文件夹"
+                    File files = FilesUtils.createFile(Constant.IMAGE_PATH + _id);     // 创建"用户文件夹"
                     if(files.exists())
                         LogUtils.i("SplashActivity当前用户文件夹"+files.getAbsolutePath());
                 }

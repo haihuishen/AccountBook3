@@ -260,14 +260,14 @@ public class ReportForMixture_Activity extends BaseReportActivity implements Pop
                 if(!TextUtils.isEmpty(mTvType.getText().toString())) {
                     if(mTvType.getText().toString().equals("主类型")) {
                         cursor = tableEx.Query(Constant.TABLE_CONSUMPTION, new String[]{"sum(price) as _id", "maintype"},
-                                "date like ? and user=?", new String[]{y_ym, AccountBookApplication.getUserInfo().getUserName()},
+                                "date like ? and userid=?", new String[]{y_ym, AccountBookApplication.getUserInfo().getId()+""},
                                 "maintype", null, "maintype");
 
                         mCurrentState = DATE_MAINTYPE;
                     }else{
                         // 不要使用 "+" 连接字段; 会当作"数值"的， 使用 "||" 代替 "+"
                         cursor = tableEx.Query(Constant.TABLE_CONSUMPTION, new String[]{"sum(price) as _id", "(maintype||'-'||type1)"},
-                                "date like ? and user=?", new String[]{y_ym, AccountBookApplication.getUserInfo().getUserName()},
+                                "date like ? and userid=?", new String[]{y_ym, AccountBookApplication.getUserInfo().getId()+""},
                                 "maintype,type1", null, "maintype");
 
                         mCurrentState = DATE_TYPE1;
@@ -279,14 +279,14 @@ public class ReportForMixture_Activity extends BaseReportActivity implements Pop
             } else  {
                 if(ChoiceYM_Y.split("-").length == 1) {                         // 2016 ==> length==1
                     cursor = tableEx.Query(Constant.TABLE_CONSUMPTION, new String[]{"sum(price) as _id", "strftime('%m月',date)"},
-                            "date like ? and user=?", new String[]{y_ym, AccountBookApplication.getUserInfo().getUserName()},
+                            "date like ? and userid=?", new String[]{y_ym, AccountBookApplication.getUserInfo().getId()+""},
                             "strftime('%Y年%m月',date)", null, null);         // 以"年月"分组，合计
 
                     mCurrentState = DATE_YEAR;
 
                 }else if (ChoiceYM_Y.split("-").length == 2) {                  // 2016-11 ==> length==2
                     cursor = tableEx.Query(Constant.TABLE_CONSUMPTION, new String[]{"sum(price) as _id", "strftime('%d日',date)"},
-                            "date like ? and user=?", new String[]{y_ym, AccountBookApplication.getUserInfo().getUserName()},
+                            "date like ? and userid=?", new String[]{y_ym, AccountBookApplication.getUserInfo().getId()+""},
                             "strftime('%Y年%m月%d日',date)", null, null);   // 以"年月日"分组，合计
 
                     mCurrentState = DATE_YEARMONTH;
@@ -295,7 +295,7 @@ public class ReportForMixture_Activity extends BaseReportActivity implements Pop
 
             // 获取本月总支出 或 获取本年总支出
             Cursor c = tableEx.Query(Constant.TABLE_CONSUMPTION, new String[]{"sum(price)"},
-                    "date like ? and user=?", new String[]{y_ym, AccountBookApplication.getUserInfo().getUserName()},
+                    "date like ? and userid=?", new String[]{y_ym, AccountBookApplication.getUserInfo().getId()+""},
                     null, null, null);
             try {
                 if (c.getCount() != 0) {        // 查询：带"函数"字段，就算"没记录"，返回的也是"1"

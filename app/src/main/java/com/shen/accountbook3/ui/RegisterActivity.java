@@ -148,7 +148,7 @@ public class RegisterActivity extends Activity{
      * 将注册信息上传到网站，根据回传的信息是否回传成功
      */
     private void upDate(final String name, final String password, final String sex){
-        final SpotsDialog checkDialog = new SpotsDialog(mContext,"正在上传图片");
+        final SpotsDialog checkDialog = new SpotsDialog(mContext,"正在注册");
         checkDialog.show();
 
 

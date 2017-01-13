@@ -90,7 +90,7 @@ public class MineFragment extends BaseFragment{
 
         mCivHead = (CircleImageView) view.findViewById(R.id.CircleImage_head);
 
-        mTvUser = (TextView) view.findViewById(R.id.tv_user);
+        mTvUser = (TextView) view.findViewById(R.id.tv_userid);
         mIvSex = (ImageView) view.findViewById(R.id.iv_sex);
         mLoginFinishLogout = (Button) view.findViewById(R.id.btn_logout);
 
@@ -182,7 +182,7 @@ public class MineFragment extends BaseFragment{
             // cast(sum(asset) as TEXT)--> 这样就不会变成"科学计数法"
             // sum(asset) -->asset 就算是 varchar(20),不是decimal(18,2)，使用sum(asset)后还是"会使用科学计数法"
             cursorTotalAssets = tableEx.Query(Constant.TABLE_ASSETS, new String[]{"cast(sum(asset) as TEXT),max(changetime)"},
-                    "user=?", new String[]{AccountBookApplication.getUserInfo().getUserName()},
+                    "userid=?", new String[]{AccountBookApplication.getUserInfo().getId()+""},
                     null, null, null);
             try {
                 if (cursorTotalAssets.getCount() != 0) {        // 查询：带"函数"字段，就算"没记录"，返回的也是"1"
@@ -214,11 +214,11 @@ public class MineFragment extends BaseFragment{
             }
 
             cursorActualTotalAssets = tableEx.getDb().rawQuery("select cast(sum(a.asset)-(select sum(price)" +
-                            "from consumption where date>(select max(changetime) from assets where user=?) and user=?) as TEXT)" +
-                            "from assets as a where user=?",
-                    new String[]{AccountBookApplication.getUserInfo().getUserName(),
-                            AccountBookApplication.getUserInfo().getUserName(),
-                            AccountBookApplication.getUserInfo().getUserName()});
+                            "from consumption where date>(select max(changetime) from assets where userid=?) and userid=?) as TEXT)" +
+                            "from assets as a where userid=?",
+                    new String[]{AccountBookApplication.getUserInfo().getId()+"",
+                            AccountBookApplication.getUserInfo().getId()+"",
+                            AccountBookApplication.getUserInfo().getId()+""});
 
             try {
                 if (cursorActualTotalAssets.getCount() != 0) {        // 查询：带"函数"字段，就算"没记录"，返回的也是"1"

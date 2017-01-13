@@ -188,26 +188,26 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
             case ReportForMixture_Activity.DATE_YEAR:
                 time = time.replace("%","")  + content.replace("月","") + "-%";
                 LogUtils.i("time:" + time);
-                mCursor = getContentResolver().query(AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and user=?",
-                        new String[]{time, AccountBookApplication.getUserInfo().getUserName()}, "date");
+                mCursor = getContentResolver().query(AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and userid=?",
+                        new String[]{time, AccountBookApplication.getUserInfo().getId()+""}, "date");
                 break;
             case ReportForMixture_Activity.DATE_YEARMONTH:
                 time = time.replace("%","")  + content.replace("日","");
                 LogUtils.i("time:" + time);
-                mCursor = getContentResolver().query(AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and user=?",
-                        new String[]{time, AccountBookApplication.getUserInfo().getUserName()}, "date");
+                mCursor = getContentResolver().query(AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and userid=?",
+                        new String[]{time, AccountBookApplication.getUserInfo().getId()+""}, "date");
                 break;
             case ReportForMixture_Activity.DATE_MAINTYPE:
                 LogUtils.i("time:" + time);
                 LogUtils.i("content:" + content);
-                mCursor = getContentResolver().query(AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and user=? and maintype=?",
-                        new String[]{time, AccountBookApplication.getUserInfo().getUserName(), content}, "date");
+                mCursor = getContentResolver().query(AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and userid=? and maintype=?",
+                        new String[]{time, AccountBookApplication.getUserInfo().getId()+"", content}, "date");
                 break;
             case ReportForMixture_Activity.DATE_TYPE1:
                 LogUtils.i("time:" + time);
                 LogUtils.i("content:" + content);
-                mCursor = getContentResolver().query(AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and user=? and maintype=? and type1=?",
-                        new String[]{time, AccountBookApplication.getUserInfo().getUserName(), content.split("-")[0], content.split("-")[1]}, "date");
+                mCursor = getContentResolver().query(AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and userid=? and maintype=? and type1=?",
+                        new String[]{time, AccountBookApplication.getUserInfo().getId()+"", content.split("-")[0], content.split("-")[1]}, "date");
                 break;
         }
 
@@ -227,11 +227,11 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
                         LogUtils.i("删除项："+position);
                         LogUtils.i("删除项___________________id："+id);
 
-                        int i = getContentResolver().delete(AccounBookProvider.URI_ACCOUNTBOOK3_ALL,"_id=? and user=?",
-                                new String[]{id, AccountBookApplication.getUserInfo().getUserName()});
+                        int i = getContentResolver().delete(AccounBookProvider.URI_ACCOUNTBOOK3_ALL,"_id=? and userid=?",
+                                new String[]{id, AccountBookApplication.getUserInfo().getId()+""});
                         // 删除对应的图片!
                         if(i > 0 && !TextUtils.isEmpty(image)){
-                            File f = new File(Constant.IMAGE_PATH+AccountBookApplication.getUserInfo().getUserName(), image);
+                            File f = new File(Constant.IMAGE_PATH+AccountBookApplication.getUserInfo().getId()+"", image);
                             if(f.exists())
                                 f.delete();
                         }
@@ -256,7 +256,7 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
             public void onUpdateBtnCilck(HashMap hashMapItem, int position) {
                 LogUtils.i("更新项position："+position);
                 LogUtils.i("更新项___________________id："+ hashMapItem.get(Constant.TABLE_CONSUMPTION__id_STRING));
-                LogUtils.i("更新项___________________user："+ hashMapItem.get(Constant.TABLE_CONSUMPTION_user_STRING));
+                LogUtils.i("更新项___________________userid："+ hashMapItem.get(Constant.TABLE_CONSUMPTION_userid_STRING));
                 LogUtils.i("更新项___________________mainType："+ hashMapItem.get(Constant.TABLE_CONSUMPTION_maintype_STRING));
                 LogUtils.i("更新项___________________type1："+ hashMapItem.get(Constant.TABLE_CONSUMPTION_type1_STRING));
                 LogUtils.i("更新项___________________concreteness："+ hashMapItem.get(Constant.TABLE_CONSUMPTION_concreteness_STRING));
@@ -270,7 +270,7 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
                 Bundle bundle = new Bundle();
 
                 bundle.putString(Constant.TABLE_CONSUMPTION__id_STRING, hashMapItem.get(Constant.TABLE_CONSUMPTION__id_STRING).toString());
-                bundle.putString(Constant.TABLE_CONSUMPTION_user_STRING, hashMapItem.get(Constant.TABLE_CONSUMPTION_user_STRING).toString());
+                bundle.putString(Constant.TABLE_CONSUMPTION_userid_STRING, hashMapItem.get(Constant.TABLE_CONSUMPTION_userid_STRING).toString());
                 bundle.putString(Constant.TABLE_CONSUMPTION_maintype_STRING, hashMapItem.get(Constant.TABLE_CONSUMPTION_maintype_STRING).toString());
                 bundle.putString(Constant.TABLE_CONSUMPTION_type1_STRING, hashMapItem.get(Constant.TABLE_CONSUMPTION_type1_STRING).toString());
                 bundle.putString(Constant.TABLE_CONSUMPTION_concreteness_STRING, hashMapItem.get(Constant.TABLE_CONSUMPTION_concreteness_STRING).toString());
@@ -324,7 +324,7 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
                 // cast(sum(asset) as TEXT)--> 这样就不会变成"科学计数法"
                 // sum(asset) -->asset 就算是 varchar(20),不是decimal(18,2)，使用sum(asset)后还是"会使用科学计数法"
                 mAllCursor = mTableEx.Query(Constant.TABLE_CONSUMPTION, new String[]{"cast(sum(price) as TEXT)"},
-                        "date like ? and user=?", new String[]{time, AccountBookApplication.getUserInfo().getUserName()},
+                        "date like ? and userid=?", new String[]{time, AccountBookApplication.getUserInfo().getId()+""},
                         null, null, "date");
 
                 mycontent = time.replace("-%","")  + "月";
@@ -350,7 +350,7 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
             case ReportForMixture_Activity.DATE_YEARMONTH:
                 time = time.replace("%","")  + content.replace("日","");
                 mAllCursor = mTableEx.Query(Constant.TABLE_CONSUMPTION, new String[]{"cast(sum(price) as TEXT)"},
-                        "date like ? and user=?", new String[]{time, AccountBookApplication.getUserInfo().getUserName()},
+                        "date like ? and userid=?", new String[]{time, AccountBookApplication.getUserInfo().getId()+""},
                         null, null, "date");
 
                 mycontent = time.replace("-%","")  + "日";
@@ -375,7 +375,7 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
                 break;
             case ReportForMixture_Activity.DATE_MAINTYPE:
                 mAllCursor = mTableEx.Query(Constant.TABLE_CONSUMPTION, new String[]{"cast(sum(price) as TEXT)"},
-                        "date like ? and user=? and maintype=?", new String[]{time, AccountBookApplication.getUserInfo().getUserName(), content},
+                        "date like ? and userid=? and maintype=?", new String[]{time, AccountBookApplication.getUserInfo().getId()+"", content},
                         null, null, "date");
 
                 mycontent = time.replace("%","") + content;
@@ -400,7 +400,7 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
                 break;
             case ReportForMixture_Activity.DATE_TYPE1:
                 mAllCursor = mTableEx.Query(Constant.TABLE_CONSUMPTION, new String[]{"cast(sum(price) as TEXT)"},
-                        "date like ? and user=? and maintype=? and type1=?", new String[]{time, AccountBookApplication.getUserInfo().getUserName(),
+                        "date like ? and userid=? and maintype=? and type1=?", new String[]{time, AccountBookApplication.getUserInfo().getId()+"",
                                 content.split("-")[0], content.split("-")[1]}, null, null, "date");
 
                 mycontent = time.replace("%","")  + content;
@@ -441,25 +441,25 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
         switch (mCurrentState){
             case ReportForMixture_Activity.DATE_YEAR:
                 time = time.replace("%","")  + content.replace("月","") + "-%";
-                loader = new CursorLoader(ConsumerDetails_Activity.this, AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and user=?",
-                        new String[]{time, AccountBookApplication.getUserInfo().getUserName()}, "date");
+                loader = new CursorLoader(ConsumerDetails_Activity.this, AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and userid=?",
+                        new String[]{time, AccountBookApplication.getUserInfo().getId()+""}, "date");
                 break;
             case ReportForMixture_Activity.DATE_YEARMONTH:
                 time = time.replace("%","")  + content.replace("日","");
-                loader = new CursorLoader(ConsumerDetails_Activity.this, AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and user=?",
-                        new String[]{time, AccountBookApplication.getUserInfo().getUserName()}, "date");
+                loader = new CursorLoader(ConsumerDetails_Activity.this, AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and userid=?",
+                        new String[]{time, AccountBookApplication.getUserInfo().getId()+""}, "date");
                 break;
             case ReportForMixture_Activity.DATE_MAINTYPE:
-                loader = new CursorLoader(ConsumerDetails_Activity.this, AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and user=? and maintype=?",
-                        new String[]{time, AccountBookApplication.getUserInfo().getUserName(), content}, "date");
+                loader = new CursorLoader(ConsumerDetails_Activity.this, AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and userid=? and maintype=?",
+                        new String[]{time, AccountBookApplication.getUserInfo().getId()+"", content}, "date");
                 break;
             case ReportForMixture_Activity.DATE_TYPE1:
-                loader = new CursorLoader(ConsumerDetails_Activity.this, AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and user=? and maintype=? and type1=?",
-                        new String[]{mCurrentTime, AccountBookApplication.getUserInfo().getUserName(), content.split("-")[0], content.split("-")[1]}, "date");
+                loader = new CursorLoader(ConsumerDetails_Activity.this, AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and userid=? and maintype=? and type1=?",
+                        new String[]{mCurrentTime, AccountBookApplication.getUserInfo().getId()+"", content.split("-")[0], content.split("-")[1]}, "date");
                 break;
             default:
-                loader = new CursorLoader(ConsumerDetails_Activity.this, AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and user=?",
-                        new String[]{mCurrentTime, AccountBookApplication.getUserInfo().getUserName()}, "date");
+                loader = new CursorLoader(ConsumerDetails_Activity.this, AccounBookProvider.URI_ACCOUNTBOOK3_ALL, null, "date like ? and userid=?",
+                        new String[]{mCurrentTime, AccountBookApplication.getUserInfo().getId()+""}, "date");
                 break;
         }
 
@@ -593,7 +593,7 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
         public void onBindViewHolder(final MyViewHolder holder, Cursor cursor) {
 
             final String _id = cursor.getString(Constant.TABLE_CONSUMPTION__id);
-            String user = cursor.getString(Constant.TABLE_CONSUMPTION_user);
+            String user = cursor.getString(Constant.TABLE_CONSUMPTION_userid);
             String mainType = cursor.getString(Constant.TABLE_CONSUMPTION_maintype);
             String type1 = cursor.getString(Constant.TABLE_CONSUMPTION_type1);
             String concreteness = cursor.getString(Constant.TABLE_CONSUMPTION_concreteness);
@@ -605,7 +605,7 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
 
             final HashMap<String,String> hashMapItem = new HashMap<String,String>();
             hashMapItem.put(Constant.TABLE_CONSUMPTION__id_STRING, _id);
-            hashMapItem.put(Constant.TABLE_CONSUMPTION_user_STRING, user);
+            hashMapItem.put(Constant.TABLE_CONSUMPTION_userid_STRING, user);
             hashMapItem.put(Constant.TABLE_CONSUMPTION_maintype_STRING, mainType);
             hashMapItem.put(Constant.TABLE_CONSUMPTION_type1_STRING, type1);
             hashMapItem.put(Constant.TABLE_CONSUMPTION_concreteness_STRING, concreteness);
@@ -632,8 +632,8 @@ public class ConsumerDetails_Activity extends Activity implements OnClickListene
 
             final Bitmap bitmap;
             if(!TextUtils.isEmpty(image)) {
-                if (new File(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getUserName(), image).exists())     // 有这个文件，才生成位图
-                    bitmap = ImageFactory.getBitmap(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getUserName() + File.separator + image);
+                if (new File(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getId()+"", image).exists())     // 有这个文件，才生成位图
+                    bitmap = ImageFactory.getBitmap(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getId() + File.separator + image);
                 else
                     bitmap = ImageFactory.getBitmap(Constant.CACHE_IMAGE_PATH + "no_preview_picture.png");
             }else{

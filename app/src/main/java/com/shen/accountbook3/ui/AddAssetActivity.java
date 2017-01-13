@@ -359,14 +359,14 @@ public class AddAssetActivity extends Activity implements View.OnClickListener{
 
             ContentValues values = new ContentValues();
             //   values.put("_id", id);                   // 主键可以不写
-            values.put("user", AccountBookApplication.getUserInfo().getUserName());
+            values.put(Constant.TABLE_ASSETS_userid_STRING, AccountBookApplication.getUserInfo().getId()+"");
 
             if (tx.equals(Constant.CREDIT)) {                                          // 信用卡
-                values.put("type", tx);                                             // 什么布局
-                values.put("changetime", tvCreditChangeTime.getText().toString()); // 修改金额时间
-                values.put("what", etCreditWhat.getText().toString());              // 什么银行的信用卡
-                values.put("cardnum", etCreditCardNum.getText().toString());        // 银行卡后面4位
-                values.put("asset", etCreditAsset.getText().toString());            // 资产
+                values.put(Constant.TABLE_ASSETS_type_STRING, tx);                                             // 什么布局
+                values.put(Constant.TABLE_ASSETS_changetime_STRING, tvCreditChangeTime.getText().toString()); // 修改金额时间
+                values.put(Constant.TABLE_ASSETS_what_STRING, etCreditWhat.getText().toString());              // 什么银行的信用卡
+                values.put(Constant.TABLE_ASSETS_cardnum_STRING, etCreditCardNum.getText().toString());        // 银行卡后面4位
+                values.put(Constant.TABLE_ASSETS_asset_STRING, etCreditAsset.getText().toString());            // 资产
 
                 if(TextUtils.isEmpty(tvCreditChangeTime.getText().toString()))
                     ToastUtil.show("修改时间不能为空");
@@ -386,11 +386,11 @@ public class AddAssetActivity extends Activity implements View.OnClickListener{
                     return;
                 }
             } else if (tx.equals(Constant.DEPOSIT)) {                                   // 储蓄卡
-                values.put("type", tx);                                             // 什么布局
-                values.put("changetime", tvDepositChangeTime.getText().toString()); // 修改金额时间
-                values.put("what", etDepositWhat.getText().toString());              // 什么银行的储蓄卡
-                values.put("cardnum", etDepositCardNum.getText().toString());        // 银行卡后面4位
-                values.put("asset", etDepositAsset.getText().toString());            // 资产
+                values.put(Constant.TABLE_ASSETS_type_STRING, tx);                                             // 什么布局
+                values.put(Constant.TABLE_ASSETS_changetime_STRING, tvDepositChangeTime.getText().toString()); // 修改金额时间
+                values.put(Constant.TABLE_ASSETS_what_STRING, etDepositWhat.getText().toString());              // 什么银行的储蓄卡
+                values.put(Constant.TABLE_ASSETS_cardnum_STRING, etDepositCardNum.getText().toString());        // 银行卡后面4位
+                values.put(Constant.TABLE_ASSETS_asset_STRING, etDepositAsset.getText().toString());            // 资产
 
                 if(TextUtils.isEmpty(tvDepositChangeTime.getText().toString()))
                     ToastUtil.show("修改时间不能为空");
@@ -411,10 +411,10 @@ public class AddAssetActivity extends Activity implements View.OnClickListener{
                     return;
                 }
             } else if (tx.equals(Constant.COMPANY)) {                                   // 借贷公司
-                values.put("type", tx);                                             // 什么布局
-                values.put("changetime", tvCompanyChangeTime.getText().toString()); // 修改金额时间
-                values.put("what", etCompanyWhat.getText().toString());              // 什么借贷公司
-                values.put("asset", etCompanyAsset.getText().toString());            // 资产
+                values.put(Constant.TABLE_ASSETS_type_STRING, tx);                                             // 什么布局
+                values.put(Constant.TABLE_ASSETS_changetime_STRING, tvCompanyChangeTime.getText().toString()); // 修改金额时间
+                values.put(Constant.TABLE_ASSETS_what_STRING, etCompanyWhat.getText().toString());              // 什么借贷公司
+                values.put(Constant.TABLE_ASSETS_asset_STRING, etCompanyAsset.getText().toString());            // 资产
 
                 if(TextUtils.isEmpty(tvCompanyChangeTime.getText().toString()))
                     ToastUtil.show("修改时间不能为空");
@@ -430,10 +430,10 @@ public class AddAssetActivity extends Activity implements View.OnClickListener{
                     return;
                 }
             } else if (tx.equals(Constant.ECPSS)) {                                     // 第三方支付
-                values.put("type", tx);                                             // 什么布局
-                values.put("changetime", tvEcpssChangeTime.getText().toString()); // 修改金额时间
-                values.put("what", etEcpssWhat.getText().toString());              // 什么第三方支付
-                values.put("asset", etEcpssAsset.getText().toString());            // 资产
+                values.put(Constant.TABLE_ASSETS_type_STRING, tx);                                             // 什么布局
+                values.put(Constant.TABLE_ASSETS_changetime_STRING, tvEcpssChangeTime.getText().toString()); // 修改金额时间
+                values.put(Constant.TABLE_ASSETS_what_STRING, etEcpssWhat.getText().toString());              // 什么第三方支付
+                values.put(Constant.TABLE_ASSETS_asset_STRING, etEcpssAsset.getText().toString());            // 资产
 
                 if(TextUtils.isEmpty(tvEcpssChangeTime.getText().toString()))
                     ToastUtil.show("修改时间不能为空");
@@ -449,10 +449,10 @@ public class AddAssetActivity extends Activity implements View.OnClickListener{
                     return;
                 }
             } else if (tx.equals(Constant.OWEOTHER)) {                                     // 欠别人钱
-                values.put("type", tx);                                             // 什么布局
-                values.put("changetime", tvOweOtherChangeTime.getText().toString()); // 修改金额时间
-                values.put("what", etOweOtherWhat.getText().toString());              // 欠什么人钱
-                values.put("asset", etOweOtherAsset.getText().toString());            // 资产
+                values.put(Constant.TABLE_ASSETS_type_STRING, tx);                                             // 什么布局
+                values.put(Constant.TABLE_ASSETS_changetime_STRING, tvOweOtherChangeTime.getText().toString()); // 修改金额时间
+                values.put(Constant.TABLE_ASSETS_what_STRING, etOweOtherWhat.getText().toString());              // 欠什么人钱
+                values.put(Constant.TABLE_ASSETS_asset_STRING, etOweOtherAsset.getText().toString());            // 资产
 
                 if(TextUtils.isEmpty(tvOweOtherChangeTime.getText().toString()))
                     ToastUtil.show("修改时间不能为空");
@@ -468,10 +468,10 @@ public class AddAssetActivity extends Activity implements View.OnClickListener{
                     return;
                 }
             } else if (tx.equals(Constant.OWEME)) {                                     // 我是债主
-                values.put("type", tx);                                                         // 什么布局
-                values.put("changetime", tvOweMeChangeTime.getText().toString());           // 修改金额时间
-                values.put("what", etOweMeWhat.getText().toString());                       // 什么人欠我钱
-                values.put("asset", etOweMeAsset.getText().toString());                     // 资产
+                values.put(Constant.TABLE_ASSETS_type_STRING, tx);                                                         // 什么布局
+                values.put(Constant.TABLE_ASSETS_changetime_STRING, tvOweMeChangeTime.getText().toString());           // 修改金额时间
+                values.put(Constant.TABLE_ASSETS_what_STRING, etOweMeWhat.getText().toString());                       // 什么人欠我钱
+                values.put(Constant.TABLE_ASSETS_asset_STRING, etOweMeAsset.getText().toString());                     // 资产
 
                 if(TextUtils.isEmpty(tvOweMeChangeTime.getText().toString()))
                     ToastUtil.show("修改时间不能为空");
@@ -487,9 +487,9 @@ public class AddAssetActivity extends Activity implements View.OnClickListener{
                     return;
                 }
             } else if (tx.equals(Constant.ME)) {                                     // 个人现金
-                values.put("type", tx);                                                     // 什么布局
-                values.put("changetime", tvMeChangeTime.getText().toString());              // 修改金额时间
-                values.put("asset", etMeAsset.getText().toString());                        // 资产
+                values.put(Constant.TABLE_ASSETS_type_STRING, tx);                                                     // 什么布局
+                values.put(Constant.TABLE_ASSETS_changetime_STRING, tvMeChangeTime.getText().toString());              // 修改金额时间
+                values.put(Constant.TABLE_ASSETS_asset_STRING, etMeAsset.getText().toString());                        // 资产
 
                 if(TextUtils.isEmpty(tvMeChangeTime.getText().toString()))
                     ToastUtil.show("修改时间不能为空");

@@ -159,9 +159,9 @@ public class OtherFragment extends BaseFragment {
         mTvAppResourceSize.setText(FileSizeUtils.getAutoFileOrFilesSize(Constant.APP_RESOURCE_PATH));
 
         if(AccountBookApplication.isLogin()) {
-            mTvAppUserResourceLocation.setText(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getUserName() + File.separator);
+            mTvAppUserResourceLocation.setText(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getId() + File.separator);
             mTvAppUserResourceSize.setText(
-                    FileSizeUtils.getAutoFileOrFilesSize(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getUserName() + File.separator));
+                    FileSizeUtils.getAutoFileOrFilesSize(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getId() + File.separator));
         }else{
             mTvAppUserResourceLocation.setText("");
             mTvAppUserResourceSize.setText("");
@@ -457,15 +457,15 @@ public class OtherFragment extends BaseFragment {
 
                         ContentValues values = new ContentValues();
                         //   values.put("id", id);                   // 主键可以不写
-                        values.put("user", "test");                        // 字段  ： 值
-                        values.put("maintype", maintype);                        // 字段  ： 值
-                        values.put("type1", type1);
-                        values.put("concreteness", concreteness);
-                        values.put("price", ToFormatUtil.toDecimalFormat(price, 2));
-                        values.put("number", number);
-                        values.put("unitPrice", ToFormatUtil.toDecimalFormat(unitPrice, 2));
-                        values.put("image", image);
-                        values.put("date", date);   // 这里只要填写 YYYY-M-DD  ，不用填date(2016-9-12 00:00:00) 这么麻烦
+                        values.put(Constant.TABLE_CONSUMPTION_userid_STRING, "123456789");                        // 字段  ： 值
+                        values.put(Constant.TABLE_CONSUMPTION_maintype_STRING, maintype);                        // 字段  ： 值
+                        values.put(Constant.TABLE_CONSUMPTION_type1_STRING, type1);
+                        values.put(Constant.TABLE_CONSUMPTION_concreteness_STRING, concreteness);
+                        values.put(Constant.TABLE_CONSUMPTION_price_STRING, ToFormatUtil.toDecimalFormat(price, 2));
+                        values.put(Constant.TABLE_CONSUMPTION_number_STRING, number);
+                        values.put(Constant.TABLE_CONSUMPTION_unitprice_STRING, ToFormatUtil.toDecimalFormat(unitPrice, 2));
+                        values.put(Constant.TABLE_CONSUMPTION_image_STRING, image);
+                        values.put(Constant.TABLE_CONSUMPTION_date_STRING, date);   // 这里只要填写 YYYY-M-DD  ，不用填date(2016-9-12 00:00:00) 这么麻烦
 
                         tableEx.Add(Constant.TABLE_CONSUMPTION, values);
                         progress++;

@@ -142,7 +142,7 @@ public class LoginActivity extends Activity {
                             SharePrefUtil.saveBoolean(getBaseContext(), SharePrefUtil.KEY.AUTO_ISCHECK, mAotu.isChecked());
 
 
-                        File files = FilesUtils.createFile(Constant.IMAGE_PATH + c_name);     // 创建"用户文件夹"
+                        File files = FilesUtils.createFile(Constant.IMAGE_PATH + _id);     // 创建"用户文件夹"
                         if(files.exists())
                             LogUtils.i("Login当前用户文件夹"+files.getAbsolutePath());
 

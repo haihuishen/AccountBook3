@@ -158,7 +158,7 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
         civHead = (CircleImageView) findViewById(R.id.Circle_Image_head);
 
         tvId = (TextView) findViewById(R.id.tv_id);
-        tvUser = (TextView) findViewById(R.id.tv_user);
+        tvUser = (TextView) findViewById(R.id.tv_userid);
         tvSex = (TextView) findViewById(R.id.tv_sex);
         tvBirthday = (TextView) findViewById(R.id.tv_birthdate);
         tvQQ = (TextView) findViewById(R.id.tv_qq);
@@ -628,7 +628,7 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
                     pops.dismiss();
                 }
                 if (AccountBookApplication.getUserInfo() != null) {
-                    mPhotoSelectedHelper.imageSelection(AccountBookApplication.getUserInfo().getUserName(), "take");
+                    mPhotoSelectedHelper.imageSelection(AccountBookApplication.getUserInfo().getId()+"", "take");
                 }
                 ToastUtil.show("拍照");
                 break;
@@ -638,7 +638,7 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
                     pops.dismiss();
                 }
                 if (AccountBookApplication.getUserInfo() != null) {
-                    mPhotoSelectedHelper.imageSelection(AccountBookApplication.getUserInfo().getUserName(), "pic");
+                    mPhotoSelectedHelper.imageSelection(AccountBookApplication.getUserInfo().getId()+"", "pic");
                 }
                 ToastUtil.show("从相册找头像");
                 break;
@@ -721,10 +721,10 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
 
             if (data != null) {              // 如果返回的Intent不为"null" 从"Intent"拿到图片数据
                 mPhotoSelectedHelper.cropImageUri(data.getData(), 200, 200,
-                        AccountBookApplication.getUserInfo().getUserName());
+                        AccountBookApplication.getUserInfo().getId()+"");
             } else {                        // 如果返回的Intent为"null" 从"拍照前设置的路径"拿到图片数据
                 mPhotoSelectedHelper.cropImageUri(mPhotoSelectedHelper.getCaptureUri(), 200, 200,
-                        AccountBookApplication.getUserInfo().getUserName());
+                        AccountBookApplication.getUserInfo().getId()+"");
             }
 
         } else if (requestCode == mPhotoSelectedHelper.PHOTO_CROP) {    // "裁剪"的返回
@@ -761,7 +761,7 @@ public class MineInfoActivity extends Activity implements View.OnClickListener,O
                     Uri u = Uri.fromFile(mediaFile);
                     // civHead.setImageBitmap(ImageFactory.getBitmap(path));
                     // 进去裁剪
-                    mPhotoSelectedHelper.cropImageUri(u, 200, 200, AccountBookApplication.getUserInfo().getUserName());
+                    mPhotoSelectedHelper.cropImageUri(u, 200, 200, AccountBookApplication.getUserInfo().getId()+"");
                 }
             }
         }

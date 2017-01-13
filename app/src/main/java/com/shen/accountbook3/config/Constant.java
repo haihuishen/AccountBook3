@@ -38,7 +38,7 @@ public class Constant {
     /*****************************************************************************************/
     // consumption表的字段(索引)
     public final static int TABLE_CONSUMPTION__id = 0;
-    public final static int TABLE_CONSUMPTION_user = 1;
+    public final static int TABLE_CONSUMPTION_userid = 1;
     public final static int TABLE_CONSUMPTION_maintype = 2;
     public final static int TABLE_CONSUMPTION_type1 = 3;
     public final static int TABLE_CONSUMPTION_concreteness = 4;
@@ -50,7 +50,7 @@ public class Constant {
 
     // consumption表的字段(字符)
     public final static String TABLE_CONSUMPTION__id_STRING = "_id";
-    public final static String TABLE_CONSUMPTION_user_STRING = "user";
+    public final static String TABLE_CONSUMPTION_userid_STRING = "userid";
     public final static String TABLE_CONSUMPTION_maintype_STRING = "maintype";
     public final static String TABLE_CONSUMPTION_type1_STRING = "type1";
     public final static String TABLE_CONSUMPTION_concreteness_STRING = "concreteness";
@@ -60,6 +60,26 @@ public class Constant {
     public final static String TABLE_CONSUMPTION_image_STRING = "image";
     public final static String TABLE_CONSUMPTION_date_STRING = "date";
 
+    /*****************************************************************************************/
+
+    // assets表的字段(索引)
+    public final static int TABLE_ASSETS__id = 0;
+    public final static int TABLE_ASSETS_userid = 1;
+    public final static int TABLE_ASSETS_type = 2;
+    public final static int TABLE_ASSETS_changetime = 3;
+    public final static int TABLE_ASSETS_what = 4;
+    public final static int TABLE_ASSETS_cardnum = 5;
+    public final static int TABLE_ASSETS_asset = 6;
+
+    // assets表的字段(字符)
+    public final static String TABLE_ASSETS__id_STRING = "_id";
+    public final static String TABLE_ASSETS_userid_STRING = "userid";
+    public final static String TABLE_ASSETS_type_STRING = "type";
+    public final static String TABLE_ASSETS_changetime_STRING = "changetime";
+    public final static String TABLE_ASSETS_what_STRING = "what";
+    public final static String TABLE_ASSETS_cardnum_STRING = "cardnum";
+    public final static String TABLE_ASSETS_asset_STRING = "asset";
+
     // asset类型
     public final static String CREDIT = "信用卡";
     public final static String DEPOSIT = "储蓄卡";
@@ -68,6 +88,7 @@ public class Constant {
     public final static String OWEOTHER = "欠别人钱";
     public final static String OWEME = "我是债主";
     public final static String ME = "个人现金";
+
 
 
 

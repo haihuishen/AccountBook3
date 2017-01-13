@@ -60,7 +60,7 @@ public class ChangeConsumptionInfoActivity extends Activity implements View.OnCl
     ImageButton btnBack;
 
     private String mId;
-    private String mUser;
+    private String mUserId;
     private String mMainType;
     private String mType1;
     private String mConcreteness;
@@ -131,7 +131,7 @@ public class ChangeConsumptionInfoActivity extends Activity implements View.OnCl
 
         if(data != null) {
             LogUtils.i("更新项___________________id：" + data.get(Constant.TABLE_CONSUMPTION__id_STRING));
-            LogUtils.i("更新项___________________user：" + data.get(Constant.TABLE_CONSUMPTION_user_STRING));
+            LogUtils.i("更新项___________________user：" + data.get(Constant.TABLE_CONSUMPTION_userid_STRING));
             LogUtils.i("更新项___________________mainType：" + data.get(Constant.TABLE_CONSUMPTION_maintype_STRING));
             LogUtils.i("更新项___________________type1：" + data.get(Constant.TABLE_CONSUMPTION_type1_STRING));
             LogUtils.i("更新项___________________concreteness：" + data.get(Constant.TABLE_CONSUMPTION_concreteness_STRING));
@@ -142,7 +142,7 @@ public class ChangeConsumptionInfoActivity extends Activity implements View.OnCl
             LogUtils.i("更新项___________________date：" + data.get(Constant.TABLE_CONSUMPTION_date_STRING));
 
             mId = data.get(Constant.TABLE_CONSUMPTION__id_STRING).toString();
-            mUser = data.get(Constant.TABLE_CONSUMPTION_user_STRING).toString();
+            mUserId = data.get(Constant.TABLE_CONSUMPTION_userid_STRING).toString();
             mMainType = data.get(Constant.TABLE_CONSUMPTION_maintype_STRING).toString();
             mType1 = data.get(Constant.TABLE_CONSUMPTION_type1_STRING).toString();
             mConcreteness = data.get(Constant.TABLE_CONSUMPTION_concreteness_STRING).toString();
@@ -167,7 +167,7 @@ public class ChangeConsumptionInfoActivity extends Activity implements View.OnCl
         btnBack = (ImageButton) findViewById(R.id.btn_back);
 
         vMasker=findViewById(R.id.v_Masker);
-        tvUser=(TextView) findViewById(R.id.tv_user);
+        tvUser=(TextView) findViewById(R.id.tv_userid);
         tvTime=(TextView) findViewById(R.id.tv_Time);
         tvOptions=(TextView) findViewById(R.id.tv_Options);
 
@@ -223,7 +223,7 @@ public class ChangeConsumptionInfoActivity extends Activity implements View.OnCl
         /**************************   为控件添加，传过来的数据 ***************************************/
         etPrice.setEnabled(false);          // 总价，不可编辑
 
-        tvUser.setText("用户:"+mUser);
+        tvUser.setText("用户id:"+ mUserId);
         tvTime.setText(mDate);
         tvOptions.setText(mMainType+"-"+mType1);
         etConcreteness.setText(mConcreteness);
@@ -302,8 +302,8 @@ public class ChangeConsumptionInfoActivity extends Activity implements View.OnCl
 
         mImageChange = false;
         if(!TextUtils.isEmpty(mImage)) {
-            if (new File(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getUserName(), mImage).exists())     // 有这个文件，才生成位图
-                bitmap = ImageFactory.getBitmap(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getUserName() + File.separator + mImage);
+            if (new File(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getId()+"", mImage).exists())     // 有这个文件，才生成位图
+                bitmap = ImageFactory.getBitmap(Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getId() + File.separator + mImage);
             else
                 bitmap = ImageFactory.getBitmap(Constant.CACHE_IMAGE_PATH + "no_preview_picture.png");
         }else {
@@ -393,19 +393,19 @@ public class ChangeConsumptionInfoActivity extends Activity implements View.OnCl
         // 根据当前的时间，组合成"照片名称"
         SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmssSSS");
         String currentTime = sDateFormat.format(new Date());
-        String imageName = AccountBookApplication.getUserInfo().getUserName() +"_"+ currentTime+".jpg";
+        String imageName = currentTime+".jpg";
 
         // 根据全局变量，添加时是否将图片添加到数据库(这个只是"图片名")
         // true:压缩图片保存在指定位置
         if(mImageChange) {  // 换了照片才压缩
             try {
                 ImageFactory.ratioAndGenThumb(Constant.CACHE_IMAGE_PATH + "CacheImage.jpg",
-                        Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getUserName() + File.separator + imageName,
+                        Constant.IMAGE_PATH + AccountBookApplication.getUserInfo().getId() + File.separator + imageName,
                         300, 300, false);
 
                 // 删除对应的图片!
                 if(!TextUtils.isEmpty(mImage)){
-                    File f = new File(Constant.IMAGE_PATH+AccountBookApplication.getUserInfo().getUserName(), mImage);
+                    File f = new File(Constant.IMAGE_PATH+AccountBookApplication.getUserInfo().getId()+"", mImage);
                     if(f.exists())
                         f.delete();
                 }
@@ -467,7 +467,7 @@ public class ChangeConsumptionInfoActivity extends Activity implements View.OnCl
 
         ContentValues values = new ContentValues();
         //   values.put("_id", id);                   // 主键可以不写
-        //   values.put("user", AccountBookApplication.getUserInfo().getUserName());
+        //   values.put("userid", AccountBookApplication.getUserInfo().getId()+"");
         values.put("maintype", maintype);                        // 字段  ： 值
         values.put("type1", type1);
         values.put("concreteness", concreteness);
@@ -477,7 +477,7 @@ public class ChangeConsumptionInfoActivity extends Activity implements View.OnCl
         values.put("image", imageName);
         values.put("date", date);   // 这里只要填写 YYYY-MM-DD  ，不用填date(2016-09-12 00:00:00) 这么麻烦
 
-        int num = getContentResolver().update(AccounBookProvider.URI_ACCOUNTBOOK3_ALL, values, "_id=? and user=?", new String[]{mId, mUser});
+        int num = getContentResolver().update(AccounBookProvider.URI_ACCOUNTBOOK3_ALL, values, "_id=? and userid=?", new String[]{mId, mUserId});
         if(num == 1) {
             ToastUtil.show("修改成功");
             finish();
